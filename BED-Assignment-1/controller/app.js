@@ -1,8 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-
 var app = express();
-
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(bodyParser.json()); //parse appilcation/json data
@@ -188,5 +186,54 @@ app.get('/game/:id/review', (req,res) => {
 })
   
 module.exports = app;
+
+
+//============================================================== Bonus Feature APIs ===============================================================================
+const multer = require('multer')
+const path = require('path')
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'controller/images/'); // Specify the destination folder where the uploaded files will be stored
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, file.originalname); // Specify the filename for the uploaded file
+    }
+  });
+
+const fileFilter = function (req, file, cb) {
+    // Accept only JPG images
+    if (file.mimetype === 'image/jpeg') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only JPG images are allowed'), false);
+    }
+  };
+  
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 1024 * 1024 }, // Set 1MB limit
+    fileFilter: fileFilter
+  });
+
+app.post('/upload', upload.single('image'), function (req, res) {
+    // The uploaded file can be accessed using req.file
+    // Process the file as needed
+  
+    res.send('File uploaded successfully');
+  });
+
+app.get("/upload", (req,res) => {
+    res.sendFile(path.join(__dirname, "upload.html"));
+})
+
+app.get("/imagesearch", (req,res) => {
+    res.sendFile(path.join(__dirname, "imagesearch.html"));
+})
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+
 
 //End
