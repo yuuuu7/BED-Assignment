@@ -7,7 +7,8 @@ var dbConnect = {
             host: "localhost",
             user: "root",
             password: "root",
-            database: "sp_games"
+            database: "sp_games",
+            dateStrings: true
 
         }
 
