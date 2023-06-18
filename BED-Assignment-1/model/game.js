@@ -5,83 +5,95 @@ const Game = {
     var conn = db.getConnection();
 
     conn.connect(function(err) {
-        if (err) {
-            console.log(err)
-            return callback(err)
-        } else {
-            console.log("Connected!")
-
-            // Validate price input
-            var prices = game.price.split(",");
-            for (var i = 0; i < prices.length; i++) {
-                if (isNaN(parseFloat(prices[i]))) {
-                    return callback("Invalid price format", null);
-                }
-            }
-
-            // Validate platformid input
-            var platformIds = game.platformid.split(",");
-            for (var i = 0; i < platformIds.length; i++) {
-                if (isNaN(parseInt(platformIds[i]))) {
-                    return callback("Invalid platformid format", null);
-                }
-            }
-
-            // Validate number of prices to number of platforms
-            if(prices.length !== platformIds.length) {
+      if (err) {
+          console.log(err);
+          return callback(err);
+      } else {
+          console.log("Connected!");
+  
+          // Validate price input
+          var prices = game.price.split(",");
+          for (var i = 0; i < prices.length; i++) {
+              if (isNaN(parseFloat(prices[i]))) {
+                  return callback("Invalid price format", null);
+              }
+          }
+  
+          // Validate platformid input
+          var platformIds = game.platformid.split(",");
+          for (var i = 0; i < platformIds.length; i++) {
+              if (isNaN(parseInt(platformIds[i]))) {
+                  return callback("Invalid platformid format", null);
+              }
+          }
+  
+          // Validate number of prices to number of platforms
+          if (prices.length !== platformIds.length) {
               return callback("Prices and Platforms do not match", null);
-            }
-
-            // Validate categoryid input
-            var categoryIds = game.categoryid.split(",");
-            for (var i = 0; i < categoryIds.length; i++) {
-                if (isNaN(parseInt(categoryIds[i]))) {
-                    return callback("Invalid categoryid format", null);
-                }
-            }
-
-            // Check if platformids exist in platform table
-            var platformSql = 'SELECT COUNT(*) AS count FROM platform WHERE id IN (?)';
-            conn.query(platformSql, [platformIds], function(err, platformResult) {
-                if (err) {
-                    conn.end();
-                    return callback(err, null);
-                }
-
-                var platformCount = platformResult[0].count;
-                if (platformCount !== platformIds.length) {
-                    conn.end();
-                    return callback("Invalid platformid(s)", null);
-                }
-
-                // Check if categoryids exist in category table
-                var categorySql = 'SELECT COUNT(*) AS count FROM category WHERE id IN (?)';
-                conn.query(categorySql, [categoryIds], function(err, categoryResult) {
-
-                    if (err) {
-                        return callback(err, null);
-                    }
-
-                    var categoryCount = categoryResult[0].count;
-                    if (categoryCount !== categoryIds.length) {
-                        return callback("Invalid categoryid(s)", null);
-                    }
-
-                    // All validations passed, insert the game
-                    var sql = 'INSERT INTO game (title, description, price, platformid, categoryid, year) VALUES (?,?,?,?,?,?)';
-                    conn.query(sql, [game.title, game.description, game.price, game.platformid, game.categoryid, game.year], function(err, results) {
-                      conn.end();
-
-                        if (err) {
-                            return callback(err, null);
-                        }
-                        return callback(null, results.insertId);
-                        });
-                    });
-                });
-            }
-        });
+          }
+  
+          // Validate categoryid input
+          var categoryIds = game.categoryid.split(",");
+          for (var i = 0; i < categoryIds.length; i++) {
+              if (isNaN(parseInt(categoryIds[i]))) {
+                  return callback("Invalid categoryid format", null);
+              }
+          }
+  
+          // Check if platformids exist in platform table
+          var platformSql = 'SELECT COUNT(*) AS count FROM platform WHERE id IN (?)';
+          conn.query(platformSql, [platformIds], function(err, platformResult) {
+              if (err) {
+                  conn.end();
+                  return callback(err, null);
+              }
+  
+              var platformCount = platformResult[0].count;
+              if (platformCount !== platformIds.length) {
+                  conn.end();
+                  return callback("Invalid platformid(s)", null);
+              }
+  
+              // Check if categoryids exist in category table
+              var categorySql = 'SELECT COUNT(*) AS count FROM category WHERE id IN (?)';
+              conn.query(categorySql, [categoryIds], function(err, categoryResult) {
+                  if (err) {
+                      return callback(err, null);
+                  }
+  
+                  var categoryCount = categoryResult[0].count;
+                  if (categoryCount !== categoryIds.length) {
+                      return callback("Invalid categoryid(s)", null);
+                  }
+  
+                  var sql = 'SELECT * FROM game WHERE game.title=?';
+                  conn.query(sql, [game.title], function(err, results) {
+                      if (err) {
+                          return callback(err, null);
+                      }
+  
+                      if (results.length === 1) {
+                          return callback("Game already exists", null);
+                      }
+  
+                      // All validations passed, insert the game
+                      var insertSql = 'INSERT INTO game (title, description, price, platformid, categoryid, year) VALUES (?,?,?,?,?,?)';
+                      conn.query(insertSql, [game.title, game.description, game.price, game.platformid, game.categoryid, game.year], function(err, results) {
+                          conn.end();
+  
+                          if (err) {
+                              return callback(err, null);
+                          }
+                          
+                          return callback(null, results.insertId);
+                          });
+                      });
+                  });
+              });
+          }
+      });
     },
+  
 
     //Retrieves games by Platform
     getGameByPlatform: function(platformid, callback) {

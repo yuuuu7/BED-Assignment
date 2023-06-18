@@ -1,3 +1,4 @@
+const { use } = require('../controller/app.js');
 var db=require('./databaseConfig.js');
 
 const Review = {
@@ -17,18 +18,31 @@ const Review = {
                     return callback("Rating should be a valid integer.", null);
                 }
 
-                var sql = 'INSERT INTO reviews (content, rating, game_id, user_id) VALUES (?,?,?,?)';
-
-                conn.query(sql, [review.content, review.rating, gameid, userid], function(err, results) {
-                    conn.end();
-
+                var sql = 'SELECT * FROM reviews WHERE game_id=? AND user_Id=?'
+                conn.query(sql, [gameid, userid], function(err,results) {
                     if(err) {
                         console.log(err);
                         return callback(err, null);
                     }
 
-                    return callback(null, results.insertId);
-                });
+                    if(results.length === 1) {
+                        return callback("User has already left a review for this game", null)
+                    }
+
+                    var sql = 'INSERT INTO reviews (content, rating, game_id, user_id) VALUES (?,?,?,?)';
+
+                    conn.query(sql, [review.content, review.rating, gameid, userid], function(err, results) {
+                        conn.end();
+
+                        if(err) {
+                            console.log(err);
+                            return callback(err, null);
+                        }
+
+                        return callback(null, results.insertId);
+                    });
+                })
+
             }
         });
     },

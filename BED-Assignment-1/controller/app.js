@@ -117,8 +117,11 @@ Game.insertNewGame(req.body, (err, results) => {
             res.status(404).send("One or more platformid(s) or categoryid(s) do not exist");
 
         } else if (err === "Prices and Platforms do not match") {
-          res.status(400).send("Total number of prices in relation to Platforms do not match");
-          
+          res.status(400).send("Total number of Prices in relation to Platforms do not match");
+
+        } else if (err === "Game already exists") {
+          res.status(400).send("Game already exists");
+
         } else {
             console.log(err)
             res.status(500).send("Internal Server Error");
@@ -181,7 +184,7 @@ app.put('/game/:gameid', (req,res) => {
           res.status(404).send("One or more platformid(s) or categoryid(s) do not exist");
 
       } else if (err === "Prices and Platforms do not match") {
-          res.status(400).send("Total number of prices in relation to Platforms do not match");
+          res.status(400).send("Total number of Prices in relation to Platforms do not match");
       } else {
           console.log(err)
           res.status(500).send("Internal Server Error");
@@ -204,6 +207,8 @@ Review.insertNewReview(userid, gameid, req.body, (err, results) => {
   if (err) {
     if (err === "Rating should be a valid integer.") {
       res.status(400).send("Rating should be a valid integer");
+    } else if(err === "User has already left a review for this game") {
+      res.status(400).send("User has already left a review for this game");
     } else {
       res.status(500).send();
     }
