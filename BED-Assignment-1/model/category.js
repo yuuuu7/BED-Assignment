@@ -2,6 +2,7 @@ var db=require('./databaseConfig.js');
 
 const Category = {
 
+    // Insert a new category into the database
     insertNewCat: function(category, callback) {
         var conn = db.getConnection();
 
@@ -12,6 +13,7 @@ const Category = {
             } else {
                 console.log("Connected!")
 
+                // Check if the category already exists in the database
                 var sql = 'SELECT * FROM category WHERE catname=?'
                 var sql2 = 'INSERT INTO category (catname,description) VALUES (?,?)'
 
@@ -26,6 +28,7 @@ const Category = {
                         return callback("Category already exists", null)
                     }
 
+                    // Insert the new category into the database
                     conn.query(sql2, [category.catname, category.description], function(err,results) {
                         conn.end();
                         
@@ -42,5 +45,6 @@ const Category = {
         });
     }
 }
+
 
 module.exports=Category;

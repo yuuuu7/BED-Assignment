@@ -5,10 +5,24 @@
 </head>
 <body>
   <h1>Upload Picture</h1>
-  <form action="/upload" method="post" enctype="multipart/form-data">
+  <form id="uploadForm" action="" method="post" enctype="multipart/form-data">
     <input type="file" name="image" />
     <br /><br />
     <input type="submit" value="Upload" />
   </form>
+
+  <script>
+    // Get the URL path
+    const currentUrl = window.location.pathname;
+
+    // Extract the game ID from the URL path
+    const segments = currentUrl.split('/');
+    const gameId = segments[segments.length - 2];
+
+    // Set the form action dynamically
+    const form = document.getElementById('uploadForm');
+    form.action = `/upload/game/${gameId}/image`;
+  </script>
 </body>
 </html>
+
