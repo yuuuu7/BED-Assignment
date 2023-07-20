@@ -4,7 +4,7 @@ var serveStatic = require('serve-static');
 
 
 app.get("/", (req, res) => {
-res.sendFile("/public/home.html", { root: __dirname });
+res.sendFile("/public/landing.html", { root: __dirname });
 });
 
 app.get("/login", (req, res) => {

@@ -1,0 +1,92 @@
+/* Reset default styles and add some basic styles for the navbar */
+  body {
+    margin: 0;
+    padding: 0;
+    background-image: url("../steam.jpg"); /* Replace with your image path */
+    background-size: cover; /* Adjust to "contain" if you want the image to fit entirely within the background */
+    background-repeat: no-repeat; /* Prevent the image from repeating if smaller than the screen */
+    width: 100%;
+  }
+  
+  .navbar {
+    /* background-color: #333; Set the background color of the navbar */
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  
+  /* Nav Brand Styling */
+  .navbar-brand a {
+    color: #fff; /* Set the default color of the brand text */
+    font-size: 24px;
+    text-decoration: none;
+    padding-left: 10px;
+  }
+  
+   /* Set the hover effect for the .brand-highlight span element */
+   .navbar-brand a:hover .brand-highlight::first-line {
+    color: red; /* Change the highlight color to red on hover */
+  }
+  
+  
+  /* Optional: Remove the underline from the entire brand on hover */
+  .navbar-brand a:hover{
+    text-decoration: none;
+    color: grey;
+    
+  }
+
+  .brand-highlight {
+    color: red; /* Set the highlight color to red */
+  }
+  
+  
+  /* Style the navbar links */
+  .navbar-nav {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+  }
+
+  .navbar-nav li a {
+    text-decoration: none;
+    padding: 10px; /* Adjust this value to add padding around the words */
+  }
+
+  .nav-item {
+    margin-right: 20px;
+  }
+  
+  .nav-item a {
+    color: #fff; /* Set the default color of the links */
+    font-size: 18px;
+    text-decoration: none;
+    position: relative; /* Required for pseudo-element */
+    transition: color 0.3s; /* Smooth color transition */
+  }
+  
+  /* Pseudo-element to create the highlight effect */
+  .nav-item a::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px; /* Set the height of the highlight */
+    background-color: #fff; /* Set the color of the highlight */
+    transform: scaleX(0); /* Initial scaling to make it invisible */
+    transform-origin: left;
+    transition: transform 0.3s; /* Smooth transform transition */
+  }
+  
+  /* Highlight effect on hover */
+  .nav-item a:hover::before {
+    transform: scaleX(1); /* Scale the highlight to full width on hover */
+  }
+  
+  .nav-item a:hover {
+    color: grey; /* Set the color to grey when hovered over */
+  }
+  
+  
