@@ -16,7 +16,40 @@
     <script>
 
         const baseURL = 'http://localhost:3000'
-        
+        $(document).ready(function() {
+          $("#Login").click(function() {
+            var id = $('#email').val();
+            var pwd = $('#pwd').val();
+            var data = "{\"email\":\"" + id + "\", \"password\":\"" + pwd + "\"}";
+      
+            $.ajax({
+              url: `${baseURL}/user/login`,
+              type: 'POST',
+              data: data,
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",
+              beforeSend: function(xhr) {
+                var token = localStorage.getItem('token');
+                if (token) {
+                  xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                }
+              },
+              success: function(data, textStatus, xhr) {
+                if (data != null) {
+                  localStorage.setItem('token', data.token);
+                  localStorage.setItem('userInfo', data.UserData);
+                  window.location.assign("http://localhost:3000/home.html");
+                } else {
+                  console.log("Error");
+                }
+              },
+              error: function(xhr, textStatus, errorThrown) {
+                console.log('Error in Operation');
+              }
+            });
+            return false;
+          });
+        });
       </script>
         
 </head>  

@@ -11,6 +11,12 @@ const Category = require('../model/category')
 const Platform = require('../model/platform')
 const Game = require('../model/game');
 const Review = require('../model/review');
+const authenticateUser = require('../isLoggedInMiddleware')
+
+var serveStatic = require('serve-static');
+// Serving static files (public directory)
+app.use(serveStatic(__dirname + '/public'));
+
 
 //============================================================== User APIs ===============================================================================
 
@@ -346,8 +352,6 @@ app.get('/game/id/:id', (req,res) => {
   })
 })
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
-
 //============================================================== Login/Logout APIs ===============================================================================
 
 app.post('/user/login',function(req, res){
@@ -377,5 +381,23 @@ console.log("..logging out.");
   res.json({success: true, status: 'Log out successful!'});
 
 });
+
+//============================================================== GET Page APIs ===============================================================================
+
+
+app.get('/explore', authenticateUser, (req, res) => {
+  res.sendFile('home.html', { root: path.join(__dirname, 'public') });
+});
+
+app.get('/', (req, res) => {
+  res.sendFile('landing.html', { root: path.join(__dirname, 'public') });
+});
+
+app.get('/login', (req, res) => {
+  res.sendFile('login.html', { root: path.join(__dirname, 'public') });
+});
+
+// ...
+
 
 //End
