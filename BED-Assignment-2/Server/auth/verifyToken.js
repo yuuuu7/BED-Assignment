@@ -1,22 +1,19 @@
 var jwt = require('jsonwebtoken');
-var express = require('express');
-var config = require('../config');
-var app = express()
-var cookieParser = require('cookie-parser')
-app.use(cookieParser())
 
+var config = require('../config');
 
 function verifyToken(req, res, next){
+    console.log(req.headers);
 
-    var token = req.cookies; //retrieve authorization header's content
+    var token = req.cookies.userCookie; //retrieve authorization header's content
     console.log(token);
 
     if(!token){ //process the token
     
        res.status(403);
        return res.send({auth:'false', message:'Not authorized!'});
-    }else{s
-
+    }else{
+       token=token.split('Bearer ')[1]; //obtain the token's value
     //console.log(token);
        jwt.verify(token, config.key, function(err, decoded){ //verify token
         if(err){

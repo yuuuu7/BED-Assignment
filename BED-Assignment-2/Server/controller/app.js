@@ -1,21 +1,28 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser')
+const cors = require("cors")
 var app = express();
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(bodyParser.json()); //parse appilcation/json data
 app.use(urlencodedParser);
+app.use(cors())
+app.use(cookieParser())
+
 
 const User = require('../model/user')
 const Category = require('../model/category')
 const Platform = require('../model/platform')
 const Game = require('../model/game');
 const Review = require('../model/review');
-const authenticateUser = require('../isLoggedInMiddleware')
+const verifyToken = require('../auth/verifyToken')
+
 
 var serveStatic = require('serve-static');
 // Serving static files (public directory)
 app.use(serveStatic(__dirname + '/public'));
+app.use(cookieParser())
 
 
 //============================================================== User APIs ===============================================================================
@@ -360,13 +367,15 @@ app.post('/user/login',function(req, res){
 
   User.loginUser(email, password, function(err, token, result){
       if(!err){
-    res.statusCode = 200;
-      res.setHeader('Content-Type', 'application/json');
-      delete result[0]['password'];//clear the password in json data, do not send back to client
-      console.log(result);
-    res.json({success: true, UserData: JSON.stringify(result), token:token, status: 'You are successfully logged in!'}); 
-    res.send();
-  }else{
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Authorization', token)
+        delete result[0]['password'];//clear the password in json data, do not send back to client
+        console.log(result);
+        res.cookie(token, { maxAge: 86400 });
+        res.json({success: true, UserData: JSON.stringify(result), token:token, status: 'You are successfully logged in!'}); 
+        res.send();
+  } else{
           res.status(500);
           res.send(err.statusCode);
       }
@@ -381,23 +390,6 @@ console.log("..logging out.");
   res.json({success: true, status: 'Log out successful!'});
 
 });
-
-//============================================================== GET Page APIs ===============================================================================
-
-
-app.get('/explore', authenticateUser, (req, res) => {
-  res.sendFile('home.html', { root: path.join(__dirname, 'public') });
-});
-
-app.get('/', (req, res) => {
-  res.sendFile('landing.html', { root: path.join(__dirname, 'public') });
-});
-
-app.get('/login', (req, res) => {
-  res.sendFile('login.html', { root: path.join(__dirname, 'public') });
-});
-
-// ...
 
 
 //End

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- customised CSS -->
+    <link href="../css/signup.css" rel="stylesheet"/>
+    <!-- compiled & minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!--compile JavaScript-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>  
+<body>  
+
+    <!-- Your existing header and background style here -->
+
+    <div class="signup-form" id="signupForm">
+        <form>
+            <h2 class="text-center"><strong>Sign Up</strong></h2>
+            <div class="form-group">
+                <input type="text" class="form-control" id="username" placeholder="Username" required="required">
+            </div>
+            <div class="form-group">
+                <input type="email" class="form-control" id="email" placeholder="Email" required="required">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" id="pwd" placeholder="Password" required="required">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block" id="SignUp">Sign Up</button>
+            </div>
+            <div class="clearfix">
+                <a href="/login" class="pull-right">Already have an account? Log In</a>
+            </div>        
+        </form> 
+    </div>
+</body>
+
+<script>
+    const baseURL = 'http://localhost:3000'
+    const signupForm = document.getElementById('signupForm')
+
+    signupForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('pwd').value;
+
+        axios.post(`${baseURL}/users`, {
+            'username': username,
+            'email': email,
+            'password': password
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    })
+</script>
+</html>

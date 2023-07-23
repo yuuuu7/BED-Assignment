@@ -1,12 +1,12 @@
 const express = require("express");
 const app = express();
 var serveStatic = require('serve-static');
-const authenticateUser = require('./isLoggedInMiddleware')
+const verifyToken = require('./auth/verifyToken')
 
 
 // Use the middleware to protect the routes
 app.get("/", (req, res) => {
-  res.sendFile("/public/landing.html", { root: __dirname });
+  res.sendFile("/public/html/landing.html", { root: __dirname });
 });
 
 // Other routes that require authentication
@@ -14,11 +14,11 @@ app.get("/", (req, res) => {
 
 // Use the middleware to protect the login route as well (optional, but good practice)
 app.get("/login", (req, res) => {
-  res.sendFile("/public/login.html", { root: __dirname });
+  res.sendFile("/public/html/login.html", { root: __dirname });
 });
 
-app.get("/explore", (req,res) => {
-    res.sendFile("/public/home.html", { root: __dirname })
+app.get("/explore", verifyToken, (req,res) => {
+    res.sendFile("/public/html/home.html", { root: __dirname })
 })
 
 // Serving static files (public directory) - No need for authentication

@@ -25,3 +25,5 @@ window.addEventListener('scroll', function() {
     // Apply the background color with the calculated opacity
     document.querySelector('.header').style.backgroundColor = `rgba(51, 51, 51, ${opacity})`;
     });
+
+

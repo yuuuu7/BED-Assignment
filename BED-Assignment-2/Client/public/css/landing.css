@@ -34,15 +34,6 @@
     text-decoration: none;
     padding-left: 10px;
   }
-
-  .navbar.black-bg {
-    background-color: #000; /* Set the background color to black when the user scrolls down */
-  }  
-  
-   /* Set the hover effect for the .brand-highlight span element */
-   .navbar-brand a:hover .brand-highlight::first-line {
-    color: red; /* Change the highlight color to red on hover */
-  }
   
   
   /* Optional: Remove the underline from the entire brand on hover */

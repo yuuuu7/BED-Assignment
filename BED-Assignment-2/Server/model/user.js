@@ -43,7 +43,7 @@ const User = {
                 console.log("Connected!");
 
                 var sql =  'SELECT * FROM users WHERE email=?';
-                var sql2 = 'INSERT INTO users (username,email,password,type,profile_pic_url) VALUES (?,?,?,?,?)';
+                var sql2 = "INSERT INTO users (username,email,password,type,profile_pic_url) VALUES (?,?,?,'Customer',?)";
 
                 conn.query(sql, [user.email], function(err, results) {
                     if(err) {
@@ -126,6 +126,8 @@ const User = {
 							token = jwt.sign({ id: result[0].userid, role: result[0].role }, config.key, {
 								expiresIn: 86400 //expires in 24 hrs
 							});
+                            
+                            
 							console.log("@@token " + token);
 							return callback(null, token, result);
 

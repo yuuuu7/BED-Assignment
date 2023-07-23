@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- customised CSS -->
+    <link href="../css/login.css" rel="stylesheet"/>
+    <!-- compiled & minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!--compile JavaScript-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        
+</head>  
+<body>  
+
+    <style>
+        body {
+            background-image: url("./steam.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+
+
+    <div class="header">
+      <nav class="navbar">
+          <div class="navbar-brand">
+              <a href="#"> <strong><span class="brand-highlight"> SP </span>Games</strong></a>
+          </div>
+          <ul class="navbar-nav d-flex justify-content-between">
+              <li class="nav-item">
+                  <a href="/" class="HomeLink"><strong>Home</strong></a>
+                  <a href="/explore" class="ExploreLink"><strong>Explore</strong></a>
+                  <a href="/login" class="LoginLink"><strong>Login</strong></a>
+              </li>
+          </ul>
+      </nav>
+    </div>
+
+    <div class="login-form" id="loginForm">
+        <form action=""> 
+            <h2 class="text-center"><strong>Log in</strong></h2>       
+            <div class="form-group">
+                <input type="text" class="form-control" id="email" placeholder="Email" required="required">
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control" id="pwd" placeholder="Password" required="required">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block" id="Login">Log in</button>
+            </div>
+            <div class="clearfix">
+                <a href="/signup" class="pull-right">Not A Member? Sign Up Now</a>
+            </div>        
+        </form> 
+    </div>
+</body>  
+
+<script>
+
+  const baseURL = 'http://localhost:3000'
+  const loginForm = document.getElementById('loginForm')
+
+  loginForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('pwd').value;
+
+    axios.post(`${baseURL}/user/login`, {
+        'email': email,
+        'password': password
+    })
+    .then((response) => {
+      const token = response.data.token;
+
+    })
+    .catch((error) => {
+      console.log('Login Failed:', error.response.data.message)
+    })
+  })
+
+</script>
+
+</html>
