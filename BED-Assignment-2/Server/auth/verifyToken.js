@@ -13,8 +13,6 @@ function verifyToken(req, res, next){
        res.status(403);
        return res.send({auth:'false', message:'Not authorized!'});
     }else{
-       token=token.split('Bearer ')[1]; //obtain the token's value
-    //console.log(token);
        jwt.verify(token, config.key, function(err, decoded){ //verify token
         if(err){
             res.status(403);

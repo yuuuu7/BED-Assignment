@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 var serveStatic = require('serve-static');
 const verifyToken = require('./auth/verifyToken')
+const cookieParser = require('cookie-parser')
+app.use(cookieParser())
 
 
 // Use the middleware to protect the routes

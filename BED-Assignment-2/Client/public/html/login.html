@@ -78,6 +78,7 @@
     .then((response) => {
       const token = response.data.token;
 
+      document.cookie = `token=${token}; path=/`
     })
     .catch((error) => {
       console.log('Login Failed:', error.response.data.message)

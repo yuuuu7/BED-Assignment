@@ -372,7 +372,6 @@ app.post('/user/login',function(req, res){
         res.setHeader('Authorization', token)
         delete result[0]['password'];//clear the password in json data, do not send back to client
         console.log(result);
-        res.cookie(token, { maxAge: 86400 });
         res.json({success: true, UserData: JSON.stringify(result), token:token, status: 'You are successfully logged in!'}); 
         res.send();
   } else{
@@ -391,5 +390,22 @@ console.log("..logging out.");
 
 });
 
+// app.post('/setCookie', (req, res) => {
+//   // Set the cookie with the "maxAge" option to make it persistent for 1 year (for example)
+//   res.cookie('userCookie', 'lol', { maxAge: 31536000000, httpOnly: false });
+//   // Adjust the value of "maxAge" to suit your requirements (in milliseconds)
+//   // In this example, "31536000000" is equal to 1 year (in milliseconds)
 
+//   res.send('Cookie set successfully!');
+// });
+
+// app.get('/getCookie', verifyToken, (req, res) => {
+//   // Retrieve the value of the cookie, if it exists
+//   const cookie = req.cookies.userCookie;
+//   res.send('User Cookie: ' + cookie);
+// });
+
+// app.get('/lol', verifyToken, (req,res) => {
+//   res.send("You Pass!")
+// })
 //End
