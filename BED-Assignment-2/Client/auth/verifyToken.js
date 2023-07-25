@@ -9,17 +9,15 @@ app.use(cookieParser())
 function verifyToken(req, res, next){
 
     const token = req.cookies.token
-
+    
     if(!token){ //process the token
     
-       res.status(403);
-       return res.send({auth:'false', message:'Not authorized!'});
+        return res.redirect('/login');
     }else{
 
        jwt.verify(token, config.key, function(err, decoded){ //verify token
         if(err){
-            res.status(403);
-            return res.end({auth:false, message:'Not authorized!'});
+            res.redirect('/403')
         }else{
             req.userid=decoded.userid; //decode the userid and store in req for use
             req.role = decoded.role; //decode the role and store in req for use

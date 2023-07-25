@@ -77,8 +77,12 @@
     })
     .then((response) => {
       const token = response.data.token;
-
+    
       document.cookie = `token=${token}; path=/`
+
+      localStorage.setItem('userInfo',response.data.UserData);
+
+      window.location.assign("http://localhost:3001/");
     })
     .catch((error) => {
       console.log('Login Failed:', error.response.data.message)

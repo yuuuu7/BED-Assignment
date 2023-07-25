@@ -6,13 +6,13 @@ const cookieParser = require('cookie-parser')
 app.use(cookieParser())
 
 
-// Use the middleware to protect the routes
 app.get("/", (req, res) => {
   res.sendFile("/public/html/landing.html", { root: __dirname });
 });
 
-// Other routes that require authentication
-// ...
+app.get("/profile", verifyToken, (req, res) => {
+  res.sendFile("/public/html/profile.html", { root: __dirname });
+});
 
 // Use the middleware to protect the login route as well (optional, but good practice)
 app.get("/login", (req, res) => {
@@ -21,6 +21,10 @@ app.get("/login", (req, res) => {
 
 app.get("/explore", verifyToken, (req,res) => {
     res.sendFile("/public/html/home.html", { root: __dirname })
+})
+
+app.get("/403", (req,res) => {
+  res.sendFile("/public/html/403.html", { root: __dirname })
 })
 
 // Serving static files (public directory) - No need for authentication

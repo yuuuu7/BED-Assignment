@@ -1,23 +1,35 @@
-/* Reset default styles and add some basic styles for the navbar */
-  body {
-    margin: 0;
-    padding: 0;
-    background-image: url("../wallpaper.jpg"); /* Replace with your image path */
+body {
+    background-image: url("../403wallpaper.jpg"); /* Replace with your image path */
     background-size: cover; /* Adjust to "contain" if you want the image to fit entirely within the background */
     background-repeat: no-repeat; /* Prevent the image from repeating if smaller than the screen */
     background-attachment: fixed;
-    width: 100%;
+    margin: 0;
+    padding: 0;
   }
-  
-  /* Styling for the header container */
-  .header {
-    color: #fff;
-    position: fixed;
-    top: 7px;
-    left: 5px;
-    width: 100%;
-    z-index: 999; /* Ensure the navbar stays above other elements */
-  }
+
+.error {
+    max-width: 600px;
+    margin: auto;
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 250px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #f00;
+}
+
+/* Styling for the header container */
+.header {
+  color: #fff;
+  position: fixed;
+  top: 7px;
+  left: 5px;
+  width: 100%;
+  z-index: 999; /* Ensure the navbar stays above other elements */
+}
 
   /* Styling for the navbar */
   .navbar {
@@ -95,37 +107,4 @@
   
   .nav-item a:hover {
     color: grey; /* Set the color to grey when hovered over */
-  }
-  
-  /* CSS to darken the carousel images */
-  .carousel-inner {
-    position: relative;
-    margin-top: 100px;
-    margin-bottom: 100px;
-  }
-
-  .carousel-inner::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Adjust the alpha value (last parameter) to control the darkness */
-    z-index: 1;
-  }
-
-  .carousel-item img {
-    z-index: 2;
-  }
-
-  /* CSS for carousel captions */
-  .carousel-caption {
-    position: absolute;
-    bottom: 20px; /* Adjust the distance from the bottom as needed */
-    padding: 10px;
-    border-radius: 5px;
-    color: #fff;
-    width: 70%; /* Adjust the width of the captions */
-    z-index: 3;
   }

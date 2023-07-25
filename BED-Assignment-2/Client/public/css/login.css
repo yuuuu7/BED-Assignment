@@ -29,13 +29,13 @@
 
 /* Styling for the header container */
 .header {
-    color: #fff;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 999; /* Ensure the navbar stays above other elements */
-  }
+  color: #fff;
+  position: fixed;
+  top: 7px;
+  left: 5px;
+  width: 100%;
+  z-index: 999; /* Ensure the navbar stays above other elements */
+}
 
   /* Styling for the navbar */
   .navbar {
