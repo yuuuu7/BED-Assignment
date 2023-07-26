@@ -142,7 +142,42 @@ const User = {
 			}
 		});
 	},
-}
 
+    // Updates a user's details
+    updateUser: function(user, callback) {
+        var conn = db.getConnection();
+
+        conn.connect(function(err) {
+            if(err) {
+                console.log(err);
+                return callback(err);
+            } else {
+                console.log("Update User EP Connected!");
+
+                var sql =  'SELECT * FROM users WHERE email=?';
+                var sql2 = 'UPDATE users SET username=?, email=? WHERE userid=?';
+                
+                conn.query(sql, [user.email], function(err, results) {
+                    if(err) {
+                        return callback(err,null);
+                    }
+
+                    if(results.length > 0) {
+                        return callback('Email already exists', null);
+                    }
+
+                    conn.query(sql2, [user.username, user.email, user.userid], function(err, results) {
+
+                        if(err) {
+                            return callback(err,null);
+                        }
+    
+                        return callback(null, {affectedRows: results.affectedRows});
+                    });
+                });
+            }
+        });
+    },
+}
 
 module.exports = User

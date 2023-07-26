@@ -56,6 +56,9 @@
             'email': email,
             'password': password
         })
+        .then((response) => {
+            window.location.assign = `${baseURL}/`
+        })
         .catch((error) => {
             console.log(error)
         })

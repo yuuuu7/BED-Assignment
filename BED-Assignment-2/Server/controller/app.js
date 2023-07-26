@@ -78,6 +78,20 @@ app.get('/users/:userid', (req,res) => {
   })
 })
 
+app.put('/users/:userid', (req,res) => {
+
+  User.updateUser(req.body, req.params.userid, (err,results) => {
+    if (err) {
+      if (err === "Email already exists") {
+        res.status(422).send("Email already exists");
+      } else {
+        res.status(500).send("Internal Server Error");
+      }
+      return;
+    }
+  })
+});
+
 //============================================================== Category API ===============================================================================
 
 // Insert a new category
@@ -389,23 +403,3 @@ console.log("..logging out.");
   res.json({success: true, status: 'Log out successful!'});
 
 });
-
-// app.post('/setCookie', (req, res) => {
-//   // Set the cookie with the "maxAge" option to make it persistent for 1 year (for example)
-//   res.cookie('userCookie', 'lol', { maxAge: 31536000000, httpOnly: false });
-//   // Adjust the value of "maxAge" to suit your requirements (in milliseconds)
-//   // In this example, "31536000000" is equal to 1 year (in milliseconds)
-
-//   res.send('Cookie set successfully!');
-// });
-
-// app.get('/getCookie', verifyToken, (req, res) => {
-//   // Retrieve the value of the cookie, if it exists
-//   const cookie = req.cookies.userCookie;
-//   res.send('User Cookie: ' + cookie);
-// });
-
-// app.get('/lol', verifyToken, (req,res) => {
-//   res.send("You Pass!")
-// })
-//End
