@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            let finalArrayOfItems = [];
+
+            let cartText = ""
+            if (localStorage.getItem("cart")) {
+                const cartItems = localStorage.getItem('cart')
+                const cartTotal = localStorage.getItem("total")
+                const arrayOfItems = cartItems.split(";")
+
+                const amount = arrayOfItems.reduce((acc, curr) => {
+                    acc[curr] = (acc[curr] || 0) + 1;
+                    return acc;
+                }, {});
+
+                finalArrayOfItems = Object.entries(amount).map(([key, value]) => ({
+                    film: key,
+                    amount: value
+                }));
+
+                if (finalArrayOfItems[0].film == "") {
+                    cartText = "Cart is Empty"
+                } else {
+                    for (let k = 0; k < finalArrayOfItems.length; k++) {
+                        cartText += finalArrayOfItems[k].film + " x" + finalArrayOfItems[k].amount + "<br/>"
+                    }
+                    cartText += "<br/>" + "Total: $" + cartTotal
+                }
+
+                let cartElement = document.getElementById("cartDetails")
+                cartElement.innerHTML = cartText
+            } else {
+                cartText = "Cart is Empty"
+                let cartElement = document.getElementById("cartDetails")
+                cartElement.innerHTML = cartText
+            }
+
+            $("#LoginPage").click(function () {
+                window.location.assign("http://localhost:3001/login.html")
+            })
+
+            $("#clearCart").click(function () {
+                localStorage.setItem('cart', "");
+                localStorage.setItem('total', 0);
+                alert("Cart Emptied successfully!")
+                location.reload();
+            })
+            const userData = localStorage.getItem("userInfo")
+            const userJsonData = JSON.parse(userData)
+            $("#purchase").click(function () {
+
+                let orderToSave = ""
+
+                if (finalArrayOfItems.length == 0) {
+                    alert("Cart is empty!")
+                    return
+                }
+                else if (userJsonData[0].title == "staff") {
+                    alert("Staff are not allowed to make purchases")
+                    return
+                } else {
+                    for (let k = 0; k < finalArrayOfItems.length; k++) {
+                        if (k == finalArrayOfItems.length - 1) {
+                            orderToSave += finalArrayOfItems[k].film + "x" + finalArrayOfItems[k].amount
+                        } else {
+                            orderToSave += finalArrayOfItems[k].film + "x" + finalArrayOfItems[k].amount + "#"
+                        }
+                    }
+
+                    const cartTotal = localStorage.getItem("total")
+                    const cardExpiry = $("#cardExpiry").val()
+                    const cardCVV = $("#cardCVV").val()
+                    const cardNum = $("#cardNum").val()
+
+
+                    if (cardNum.length !== 16 || isNaN(parseInt(cardNum) == true)) {
+                        alert("Please enter a valid Credit Card number")
+                        return
+                    } else if (validateDate(cardExpiry) == false) {
+                        alert("Please enter a valid expire date")
+                        return
+                    } else if (cardCVV.length !== 3 || isNaN(parseInt(cardCVV))) {
+                        alert("Please enter a valid Card CVV")
+                        return
+                    }
+                    const tempToken = localStorage.getItem("token")
+                    $.ajax({
+                        headers: { "authorization": "Bearer " + tempToken },
+                        url: "http://localhost:8081/customer/email?email=" + userJsonData[0].email,
+                        type: "GET",
+                        dataType: "json",
+                        success: function (data, textStatus, xhr) {
+                            if (data != null) {
+                                console.log(data)
+                                const dataObject = {
+                                    customer_id: data[0].customer_id,
+                                    cardNum: cardNum,
+                                    cartString: orderToSave,
+                                    total: cartTotal,
+                                }
+
+                                const dataStringed = JSON.stringify(dataObject)
+                                $.ajax({
+                                    headers: { "authorization": "Bearer " + tempToken },
+                                    url: "http://localhost:8081/customer/purchase",
+                                    type: "POST",
+                                    data: dataStringed,
+                                    contentType: "application/json;charset=utf-8",
+                                    dataType: "json",
+                                    success: function (data, textStatus, xhr) {
+                                        if (data !== null) {
+                                            console.log(data)
+                                            alert("Purchase successful!")
+                                            window.location.assign("http://localhost:3001/homePage.html")
+                                        } else {
+                                            console.log("data is null")
+                                        }
+                                    },
+                                    error: function (xhr, textStatus, errorThrown) {
+                                        console.log("Error in operation")
+                                    },
+                                })
+                            } else {
+                                console.log(textStatus)
+                            }
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            alert("Please Login in order to make purchases!")
+                            console.log("error in operation getting address")
+                        },
+                    })
+
+
+
+
+
+                }
+
+            })
+
+            function validateDate(cardExp) {
+                var re = /^(0[1-9]|1[0-2])\/([0-9]{4})$/;
+                return re.test(cardExp);
+            }
+
+
+
+        })
+
+    </script>
+</head>
+
+
+<body style="background-color: antiquewhite;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="http://localhost:3001/homePage.html">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="http://localhost:3001/shoppingCart.html">Shopping Cart <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/profile.html">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addCustomer.html">Add Customer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addActor.html">Add Actor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addDVD.html">Add DVD</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div id="cartBody">
+            <div class="text-center mt-5">
+                <h1>Your Cart</h1>
+            </div>
+
+            <div style="width: 30%; border: 2px black solid; text-align: center; margin-left: auto; margin-right: auto;"
+                id="cartDetails">
+
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <h5>Payment Details</h5>
+                <input id="cardNum" placeholder="xxxxxxxxxxxxxxxx"
+                    style="margin-left: auto; margin-right: auto; width: 40%; margin-top: 5px;">
+                <div>
+                    <input id="cardExpiry" placeholder="MM/YYYY"
+                        style="margin-left: auto; margin-right: auto; width: 20%; margin-top: 10px;">
+                    <input id="cardCVV" placeholder="CVV"
+                        style="margin-left: auto; margin-right: auto; width: 20%; margin-top: 10px;">
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; margin-top: 50px; text-align: center;">
+                <button type="button" class="btn btn-primary" id="clearCart">Clear cart</button>
+                <button type="button" class="btn btn-primary" id="purchase">Confirm Purchase</button>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>

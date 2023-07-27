@@ -2,7 +2,7 @@
   body {
     margin: 0;
     padding: 0;
-    background-image: url("../wallpaper.jpg"); /* Replace with your image path */
+    background-image: url("../steam.jpg"); /* Replace with your image path */
     background-size: cover; /* Adjust to "contain" if you want the image to fit entirely within the background */
     background-repeat: no-repeat; /* Prevent the image from repeating if smaller than the screen */
     background-attachment: fixed;

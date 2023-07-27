@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<head>
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href="css/login.css?_&amp;d2lSessionVal=OpLTSALZaG8dTUyhzO7EkYXHw&amp;ou=173398" rel="stylesheet" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$("#Login").click(function () {
+				//retrieve the value from the text boxes
+				const email = $("#email").val()
+				const password = $("#pwd").val()
+				//build the data in request body
+				const dataObject = {
+					//these must match the spelling of the ones in the app.js
+					email: email,
+					password: password,
+				}
+				const data = JSON.stringify(dataObject)
+				//send http request
+				$.ajax({
+					url: "http://localhost:8081/login",
+					type: "POST",
+					data: data,
+					contentType: "application/json;charset=utf-8",
+					dataType: "json",
+					success: function (data, textStatus, xhr) {
+						if (data != null) {
+							console.log(data)
+							//store token and userdata in localStorage
+							localStorage.setItem('token', data.token)
+							localStorage.setItem('userInfo', data.UserData)
+							//redirect to profile.html
+							window.location.assign("http://localhost:3001/homePage.html")
+						} else {
+							console.log("data is null")
+						}
+					},
+					error: function (xhr, textStatus, errorThrown) {
+						console.log("Error in operation")
+					},
+				})
+
+
+				return false //prevents the page from reloading once you press submit
+			})
+		})
+	</script>
+
+
+	<script>function lti_launch(vars, target) {
+			var query = '';
+			var new_tab = false;
+
+			for (var key in vars) {
+				if (query.length == 0) {
+					query += '?' + key + '=' + encodeURIComponent(vars[key]);
+				}
+				else {
+					query += '&' + key + '=' + encodeURIComponent(vars[key]);
+				}
+			}
+
+			var url = '/d2l/customization/pearsonlti/173398/Launch' + query; (target == '_blank') ? window.open(url, '_blank') : location.replace(url);
+		}</script>
+	<script src="https://s.brightspace.com/lib/bsi/20.22.12-225/unbundled/mathjax.js?v=20.22.12.20206"
+		type="module"></script>
+	<script>document.addEventListener('DOMContentLoaded', function () {
+			if (document.querySelector('math') || /\$\$|\\\(|\\\[|\\begin{|\\ref{|\\eqref{/.test(document.body.innerHTML)) {
+				document.querySelectorAll('mspace[linebreak="newline"]').forEach(elm => {
+					elm.setAttribute('style', 'display: block; height: 0.5rem;');
+				});
+
+				window.D2L.MathJax.loadMathJax({
+					'outputScale': 1.3,
+					'renderLatex': true
+				});
+			}
+		});</script>
+	<script src="https://s.brightspace.com/lib/bsi/20.22.12-225/unbundled/prism.js?v=20.22.12.20206"
+		type="module"></script>
+	<script>document.addEventListener('DOMContentLoaded', function () {
+			document.querySelectorAll('.d2l-code').forEach(code => {
+				window.D2L.Prism.formatCodeElement(code);
+			});
+		});</script>
+	<script>window.addEventListener('message', function (event) {
+			if (!event.data) {
+				return;
+			}
+
+			var params;
+			try {
+				params = JSON.parse(event.data);
+			}
+			catch {
+				return;
+			}
+			if (!params.subject || params.subject !== 'lti.frameResize') {
+				return;
+			}
+
+			const MAX_FRAME_HEIGHT = 10000
+			if (!params.height || params.height < 1 || params.height > MAX_FRAME_HEIGHT) {
+				console.warn('Invalid height value received, aborting');
+				return;
+			}
+			var el = document.getElementsByTagName('iframe');
+			for (var i = 0; i < el.length; i++) {
+				if (el[i].contentWindow === event.source) {
+					el[i].style.height = params.height + 'px';
+					el[i].style.width = '100%';
+					console.info('Setting iFrame height to ' + params.height);
+					console.info('Setting iFrame width to 100%');
+				}
+			}
+		});</script>
+</head>
+
+<body style="background-color: antiquewhite;">
+
+	<div class="login-form">
+		<form action="">
+			<h2 class="text-center">Log in</h2>
+			<div class="form-group">
+				<input type="text" class="form-control" id="email" placeholder="Email" required="required">
+			</div>
+			<div class="form-group">
+				<input type="password" class="form-control" id="pwd" placeholder="Password" required="required">
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary btn-block" id="Login">Log in</button>
+			</div>
+			<div class="clearfix">
+				<a href="http://localhost:3001/homePage.html" class="pull-right">continue as guest</a>
+			</div>
+		</form>
+	</div>
+</body>
+
+</html>

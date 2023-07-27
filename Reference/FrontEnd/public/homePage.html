@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Friendbook</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script>
+        function navigateTo(title, film_id, description, release_year, rental_rate, length, replacement_cost, rating, catName, image) {
+            const filmInfo = {
+                title: title,
+                film_id: film_id,
+                description: description,
+                release_year: release_year,
+                rental_rate: rental_rate,
+                length: length,
+                replacement_cost: replacement_cost,
+                rating: rating,
+                catName: catName,
+                image: image,
+            }
+
+
+            localStorage.setItem('filmInfo', JSON.stringify(filmInfo))
+            window.location.assign("http://localhost:3001/details.html")
+        }
+
+        $(document).ready(function () {
+
+            let addStaffButton = document.getElementById("addActor")
+            let shoppingCart = document.getElementById("cart")
+            let addCustomerButton = document.getElementById("addCustomer")
+
+
+
+            function getCatData() {
+                $.ajax({
+                    url: "http://localhost:8081/categories",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data, textStatus, xhr) {
+                        if (data != null) {
+                            localStorage.setItem('allCats', JSON.stringify(data))
+                            const allCats = JSON.parse(localStorage.getItem('allCats'))
+
+                            var picker = document.getElementById("picker");
+
+                            for (var i = 0; i < allCats.length; i++) {
+                                var option = document.createElement("option");
+                                option.value = allCats[i].name;
+                                option.text = allCats[i].name;
+                                picker.appendChild(option);
+                            }
+                        } else {
+                            console.log(textStatus)
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log("error in operation")
+                    },
+                })
+            }
+
+            const filmTitle = ""
+            const maxPrice = ""
+            const catName = "none"
+
+
+            $.ajax({
+                url: "http://localhost:8081/films?filmTitle=" + filmTitle + "&maxPrice=" + maxPrice + "&catName=" + catName,
+                type: "GET",
+                dataType: "json",
+                success: function (data, textStatus, xhr) {
+                    if (data != null) {
+                        localStorage.setItem('filmsByTitle', JSON.stringify(data))
+                        const filmData = JSON.parse(localStorage.getItem('filmsByTitle'))
+                        console.log(filmData)
+                        const itemsPerTab = 1000000
+                        const numOfTabs = Math.ceil(filmData.length / itemsPerTab)
+                        const tabContentArr = []
+                        for (let i = 0; i < filmData.length; i += itemsPerTab) {
+                            let tabContent = filmData.slice(i, i + itemsPerTab);
+                            tabContentArr.push(tabContent);
+                        }
+
+                        if (filmData != null) {
+                            let tabCode = "";
+                            let contentCode = "";
+
+                            for (let i = 0; i < numOfTabs; i++) {
+                                let active = "";
+                                let ariaSelected = "false";
+                                if (i === 0) {
+                                    active = "active";
+                                    ariaSelected = "true";
+                                }
+                                tabCode +=
+                                    `<li class="nav-item">
+                            <a class="nav-link ${active}" id="tab-${i}-tab" data-toggle="tab" href="#content-tab-${i}" role="tab" aria-controls="content-tab-${i}" aria-selected="${ariaSelected}">Page ${i + 1}</a>
+                        </li>`;
+                                let insideContentCode = ""
+
+
+                                for (let k = 0; k < tabContentArr[i].length; k++) {
+                                    if (tabContentArr[i][k].image == null) {
+                                        insideContentCode +=
+                                            `
+                                <div class="card" style="width: 20rem; float: left; margin-bottom: 20px; height: 350px; margin-right: 25px; object-fit: cover;"  onclick="navigateTo('${tabContentArr[i][k].title}', '${tabContentArr[i][k].film_id}' , '${tabContentArr[i][k].description}' , '${tabContentArr[i][k].release_year}', '${tabContentArr[i][k].rental_rate}', '${tabContentArr[i][k].length}', '${tabContentArr[i][k].replacement_cost}', '${tabContentArr[i][k].rating}', '${tabContentArr[i][k].name}', '${tabContentArr[i][k].image}')">
+                                    <img class="card-img-top" src="./image/disc.png" alt="Card image cap"  style="overflow: hidden; width: 200px; align-self: center;">
+                                        <div class="card-body">
+                                            <p class="card-text" style="color:#000000">Title: ${tabContentArr[i][k].title}</p>
+                                            <p class="card-text">${tabContentArr[i][k].description}</p>
+                                            <a href="#" class="btn btn-primary">More details</a>
+                                        </div>
+                                 </div>
+                                            `
+                                    } else {
+                                        const imgUrl = tabContentArr[i][k].image
+                                        insideContentCode +=
+                                            `
+                                <div class="card" style="width: 20rem; float: left; margin-bottom: 20px; height: 350px; margin-right: 25px; object-fit: cover;"  onclick="navigateTo('${tabContentArr[i][k].title}', '${tabContentArr[i][k].film_id}' , '${tabContentArr[i][k].description}' , '${tabContentArr[i][k].release_year}', '${tabContentArr[i][k].rental_rate}', '${tabContentArr[i][k].length}', '${tabContentArr[i][k].replacement_cost}', '${tabContentArr[i][k].rating}', '${tabContentArr[i][k].name}', '${tabContentArr[i][k].image}')">
+                                    <img class="card-img-top" src="${imgUrl}" alt="Card image cap"  style="overflow: hidden; width: 200px; align-self: center;">
+                                        <div class="card-body">
+                                            <p class="card-text" style="color:#000000">Title: ${tabContentArr[i][k].title}</p>
+                                            <p class="card-text">${tabContentArr[i][k].description}</p>
+                                            <a href="#" class="btn btn-primary">More details</a>
+                                        </div>
+                                </div>
+                                            `
+                                    }
+
+                                }
+
+                                contentCode +=
+                                    `
+                            ${insideContentCode}
+                        `;
+                            }
+
+                            $("#TabContent").html(contentCode);
+
+                        } else {
+                            console.log("Data is null")
+                        }
+
+
+                        getCatData()
+                        $("#addActor").click(function () {
+                            window.location.href = ('http://localhost:3001/addActor.html')
+                        })
+                    } else {
+                        console.log(textStatus)
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log("error in operation")
+                },
+            })
+            //retrieve the userInfo from localStorage
+
+
+
+            $("#addCustomer").click(function () {
+                window.location.href = ('http://localhost:3001/addCustomer.html')
+            })
+
+            $("#search").click(function () {
+                const filmTitle = $("#titleInput").val()
+                const maxPrice = $("#maxPrice").val()
+                const catName = $("#picker").val()
+                $.ajax({
+                    url: "http://localhost:8081/films?filmTitle=" + filmTitle + "&maxPrice=" + maxPrice + "&catName=" + catName,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data, textStatus, xhr) {
+                        if (data != null) {
+                            localStorage.setItem('filmsByTitle', JSON.stringify(data))
+                            window.location.href = ('http://localhost:3001/results.html')
+                        } else {
+                            console.log(textStatus)
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log("error in operation")
+                    },
+                })
+                return false
+            })
+        })
+    </script>
+</head>
+
+
+<body style="background-color: antiquewhite;">
+
+
+
+    <div class="wrapper">
+        <div id="container">
+            <div class="bar1"></div>
+            <div class="bar"></div>
+            <div class="bar1"></div>
+            <div class="bar"></div>
+            <div class="bar1"></div>
+        </div>
+    </div>
+
+
+    <ul class="menu">
+        <li><a href="#">Home</a></li>
+        <li><a href="http://localhost:3001/shoppingCart.html">Shopping Cart</a></li>
+        <li><a href="http://localhost:3001/profile.html">Profile</a></li>
+        <li><a href="http://localhost:3001/addCustomer.html">Add Customer</a></li>
+        <li><a href="http://localhost:3001/addActor.html">Add Actor</a></li>
+        <li><a href="http://localhost:3001/addDVD.html">Add DVD</a></li>
+    </ul>
+
+
+    <div style="margin-left: 40px;" id="cart">
+
+    </div>
+    <div id="addActor" style="float: right; margin: 0;">
+    </div>
+    <div id="addCustomer" style="float: right; margin: 0;">
+    </div>
+
+    <div class="container">
+        <div style="margin-top: 0; padding-top: 30px;">
+            <h1>DVD Rental Store</h1>
+            <form style="margin-top: 50px;">
+                <div class="row g-3 align-items-center mt-4">
+                    <div class="col-6 w-50">
+                        <input class="form-control border-top-0 border-left-0 border-right-0 rounded-0" id="titleInput"
+                            placeholder="Search for title...">
+                    </div>
+                    <div class="col-2 d-flex justify-content-end padding: 0">
+                        <label for="maxPrice" class="form-label">Max Price: </label>
+                    </div>
+                    <div class="col-3 p-0">
+
+                        <input type="text" id="maxPrice" class="form-control">
+                    </div>
+                    <div class="col-1">
+                        <button type="submit" class="btn btn-primary" id="search">Search</button>
+                    </div>
+                </div>
+                <div class="mb-3 mt-4 w-75">
+                    <label for="exampleInputEmail1" class="form-label">Search by Category</label>
+                    <select id="picker" class="w-50">
+                        <option value="none"></option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="container">
+        <div id="tabContainer">
+            <div class="tab-content" id="TabContent">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let logo = document.querySelector("#container")
+        let menu = document.querySelector(".menu")
+
+        logo.addEventListener("click", function () {
+            menu.classList.toggle("showMenu")
+        })
+    </script>
+
+
+    <style>
+        .wrapper {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        #container {
+            background-color: antiquewhite;
+            float: right;
+            height: 25px;
+            width: 40px;
+            margin-top: 20px;
+            margin-right: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .bar1 {
+            height: 5px;
+            width: 30px;
+            background-color: orange;
+        }
+
+        .menu {
+            position: absolute;
+            background-color: orange;
+            width: 30%;
+            height: 100vh;
+            padding: 50px;
+            transition: 0.5s;
+            transform: translateX(-500px);
+            z-index: 3;
+        }
+
+        .menu li {
+            list-style-type: none;
+            border-bottom: 1px solid white;
+            padding: 35px 0;
+            text-align: center;
+        }
+
+        .menu li:first-child {
+            font-weight: bold;
+        }
+
+        .menu li a {
+            color: snow;
+            text-decoration: none;
+            font-size: 20px;
+            transition: font-weight 0.2s;
+        }
+
+        .menu li:last-child {
+            border-bottom: none;
+        }
+
+        .menu li a:hover {
+            font-weight: bold;
+        }
+
+        .showMenu {
+            transform: translateX(0);
+        }
+
+        @media screen and (min-width:1000px) {
+            .menu {
+                width: 500px;
+            }
+        }
+
+        @media screen and (max-width:600px) {
+            .menu li a {
+                font-size: 16px;
+            }
+        }
+    </style>
+
+</body>
+
+</html>

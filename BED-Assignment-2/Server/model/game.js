@@ -95,38 +95,38 @@ const Game = {
     },
   
 
-    //Retrieves games by Platform
-    getGameByPlatform: function(platformid, callback) {
-        var conn = db.getConnection();
+    // //Retrieves games by Platform
+    // getGameByPlatform: function(platformid, callback) {
+    //     var conn = db.getConnection();
       
-        conn.connect(function(err) {
-          if (err) {
-            console.log(err);
-            return callback(err);
-          } else {
-            console.log("Connected");
+    //     conn.connect(function(err) {
+    //       if (err) {
+    //         console.log(err);
+    //         return callback(err);
+    //       } else {
+    //         console.log("Connected");
             
-            //Selects prices based on the position of the platform ids in the platformid column. E.g. 35,45,55  1,2,3  Platform id: 1 = 35, 2 = 45, 3 = 55
-            var sql = `
-              SELECT game.id, game.title, game.description, 
-              SUBSTRING_INDEX(SUBSTRING_INDEX(game.price, ',', FIND_IN_SET(?, game.platformid)), ',' , -1) AS price, 
-              (SELECT platform_name FROM platform WHERE id=?) AS platform_name,
-              category.id AS catid, category.catname, game.year, game.created_at
-              FROM game
-              JOIN category ON game.categoryid = category.id
-              WHERE FIND_IN_SET(?, game.platformid) > 0
-              `;
+    //         //Selects prices based on the position of the platform ids in the platformid column. E.g. 35,45,55  1,2,3  Platform id: 1 = 35, 2 = 45, 3 = 55
+    //         var sql = `
+    //           SELECT game.id, game.title, game.description, 
+    //           SUBSTRING_INDEX(SUBSTRING_INDEX(game.price, ',', FIND_IN_SET(?, game.platformid)), ',' , -1) AS price, 
+    //           (SELECT platform_name FROM platform WHERE id=?) AS platform_name,
+    //           category.id AS catid, category.catname, game.year, game.created_at
+    //           FROM game
+    //           JOIN category ON game.categoryid = category.id
+    //           WHERE FIND_IN_SET(?, game.platformid) > 0
+    //           `;
       
-            conn.query(sql, [platformid, platformid, platformid], function(err, results) {
-              if (err) {
-                return callback(err, null);
-              }
+    //         conn.query(sql, [platformid, platformid, platformid], function(err, results) {
+    //           if (err) {
+    //             return callback(err, null);
+    //           }
       
-              return callback(null, results);
-            });
-          }
-        });
-      },
+    //           return callback(null, results);
+    //         });
+    //       }
+    //     });
+    //   },
 
       // Deletes a game from the database based on its ID
       deleteGameByID: function(gameid, callback)  {
@@ -347,7 +347,7 @@ const Game = {
       },
 
         //Retrieve games via search bar
-        getGameBySearch: function (game, callback) {
+        gameSearch: function (search, callback) {
             var conn = db.getConnection();
 
             conn.connect(function (err) {
@@ -355,11 +355,11 @@ const Game = {
                     return callback(err);
                 }
                 console.log("Connected to Search EP");
-                
+
                 // SQL query to select games based on search input
                 var sql = `SELECT * FROM game WHERE title LIKE ?`;
 
-                conn.query(sql, [`%${game.input}%`], function (err, results) {
+                conn.query(sql, [`%${search}%`], function (err, results) {
                     conn.end();
 
                     if (err) {

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Actor</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            const userData = JSON.parse(localStorage.getItem('userInfo'))
+
+            if (!userData) {
+
+            } else if (userData[0].title == "customer") {
+                alert("Only staff are able to view this page")
+                window.location.href = ('http://localhost:3001/homePage.html')
+            }
+
+            $("#addActor").click(function () {
+                const firstName = $("#first_name").val()
+                const lastName = $("#last_name").val()
+                const tempToken = localStorage.getItem("token")
+                const dataObject = {
+                    first_name: firstName,
+                    last_name: lastName,
+                }
+
+                const data = JSON.stringify(dataObject)
+                $.ajax({
+                    headers: { "authorization": "Bearer " + tempToken, "role": userData[0].role },
+                    url: "http://localhost:8081/actors",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
+                    data: data,
+                    success: function (data, textStatus, xhr) {
+                        if (data != null) {
+                            console.log(data)
+                            let myDiv = document.getElementById("success");
+                            myDiv.innerHTML = firstName + " " + lastName + " added successfully with an ID of " + data.actor_id + ".";
+                        } else {
+                            console.log(textStatus)
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        alert("Please login as an Admin in order to add an actor")
+                        console.log(errorThrown)
+                    },
+                })
+                return false
+            })
+
+
+
+        })
+
+    </script>
+</head>
+
+
+<body style="background-color: antiquewhite;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="http://localhost:3001/homePage.html">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/shoppingCart.html">Shopping Cart <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/profile.html">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addCustomer.html">Add Customer</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="http://localhost:3001/addActor.html">Add Actor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addDVD.html">Add DVD</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="text-center mt-5">
+            <h1>Add a new Actor</h1>
+        </div>
+        <div class="d-flex justify-content-center mt-5">
+            <h5>Enter First Name of Actor:</h5>
+        </div>
+        <div class="d-flex justify-content-center">
+            <input id="first_name" placeholder="first name" />
+        </div>
+        <div class="d-flex justify-content-center mt-5">
+            <h5>Enter Last Name of Actor:</h5>
+        </div>
+        <div class="d-flex justify-content-center">
+            <input id="last_name" placeholder=" last name" />
+        </div>
+        <div class="d-flex justify-content-center mt-5">
+            <button type="submit" class="btn btn-primary background-color-red" id="addActor">Add Actor</button>
+        </div>
+
+        <div id="success" class="d-flex justify-content-center mt-4 text-success ">
+
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>

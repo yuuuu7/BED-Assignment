@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Movie Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const userInfo = JSON.parse(localStorage.getItem("userInfo"))
+            let shoppingCart = document.getElementById("cart")
+
+            function getAllReviews() {
+                $.ajax({
+                    url: "http://localhost:8081/films/reviews?film_id=" + filmInfo.film_id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data, textStatus, xhr) {
+                        if (data != null) {
+                            console.log(data)
+                            let list = document.getElementById("listOfReviews")
+                            data.forEach((item) => {
+                                let listItem = document.createElement("li")
+                                listItem.innerHTML = item.review_text + item.review_number + "/5"
+                                list.appendChild(listItem);
+                            });
+                        } else {
+                            console.log(textStatus)
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log("error in operation")
+                    },
+                })
+            }
+
+
+            function getActors() {
+                $.ajax({
+                    url: "http://localhost:8081/film/actors?film_id=" + filmInfo.film_id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data, textStatus, xhr) {
+                        if (data != null) {
+                            // localStorage.setItem('filmActors', JSON.stringify(data))
+                            // const allActors = JSON.parse(localStorage.getItem('filmActors'))
+                            let list = document.getElementById("listOfActors")
+                            data.forEach((item) => {
+                                let listItem = document.createElement("li")
+                                listItem.innerHTML = item.first_name + " " + item.last_name
+                                list.appendChild(listItem);
+                            });
+                        } else {
+                            console.log(textStatus)
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log("error in operation")
+                    },
+                })
+            }
+
+            const filmInfo = JSON.parse(localStorage.getItem('filmInfo'))
+
+            let headerTitle = document.getElementById("title");
+            let title = document.createTextNode(filmInfo.title);
+            headerTitle.appendChild(title);
+
+            let catTitle = document.getElementById("category")
+            let category = document.createTextNode(filmInfo.catName);
+            catTitle.appendChild(category);
+
+            let releaseYear = document.getElementById("release")
+            let release = document.createTextNode(filmInfo.release_year);
+            releaseYear.appendChild(release);
+
+            let desc = document.getElementById("desc")
+            let filmdesc = document.createTextNode(filmInfo.description);
+            desc.appendChild(filmdesc);
+
+            let rating = document.getElementById("rating")
+            let filmRating = document.createTextNode(filmInfo.rating)
+            rating.appendChild(filmRating)
+
+            let rental_rate = document.getElementById("rentalRate")
+            let filmRate = document.createTextNode(filmInfo.rental_rate)
+            rental_rate.appendChild(filmRate)
+
+            let length = document.getElementById("length")
+            let filmLength = document.createTextNode(filmInfo.length)
+            length.appendChild(filmLength)
+
+            getActors()
+            getAllReviews()
+
+
+            $("#review").click(function () {
+                window.location.assign("http://localhost:3001/review.html")
+            })
+
+            $("#addToCart").click(function () {
+
+                const filmInfo = JSON.parse(localStorage.getItem('filmInfo'))
+                let currentCart = localStorage.getItem('cart');
+                let currentTotal = localStorage.getItem("total")
+                let newTotal = parseFloat(currentTotal) + parseFloat(filmInfo.rental_rate)
+
+
+                // If no existing data, use the value by itself
+                // Otherwise, add the new value to it
+                let dataCart = currentCart ? currentCart + (';' + filmInfo.title) : (filmInfo.title + '');
+                let dataTotal = currentTotal ? newTotal : (filmInfo.rental_rate);
+
+                localStorage.setItem('cart', dataCart);
+                localStorage.setItem('total', dataTotal);
+
+
+                alert("Item added successfully")
+            })
+
+
+            $("#clearCart").click(function () {
+                localStorage.setItem('cart', "");
+                localStorage.setItem('total', 0);
+                alert("Cart Emptied successfully!")
+            })
+
+
+        })
+
+    </script>
+</head>
+
+
+<body style="background-color: antiquewhite;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="http://localhost:3001/homePage.html">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/shoppingCart.html">Shopping Cart <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/profile.html">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addCustomer.html">Add Customer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addActor.html">Add Actor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addDVD.html">Add DVD</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+
+        <div id="cart">
+        </div>
+    </div>
+    <h1 id="title" class="text-center mt-4"></h1>
+    </div>
+
+    <div class="d-flex w-100">
+        <h4 id="category" class="mt-5 w-50 text-center mt-4">Category: </h4>
+        <h4 id="release" class="mt-5 w-50 text-center mt-4">Release Year: </h4>
+    </div>
+
+    <div>
+        <h4 class="w-100 text-center mt-4">Description:<br /></h4>
+        <p id="desc" class="text-center" style="font-size:larger;"></p>
+    </div>
+
+    <div>
+        <p class="mt-4 text-center" style="font-size: 30px; font-weight: bold;" id="rating">Rating: </hp>
+    </div>
+    <div style="display: flex; justify-content: center;">
+        <p class="mt-4" style="font-size: 20px; margin-right: 100px;" id="rentalRate">Rental rate: $</hp>
+        <p class="mt-4" style="font-size: 20px;" id="length">Length (in minutes): </hp>
+
+    </div>
+
+    <div class="mx-auto mt-5" style="width: 200px;">
+        <h4>Actors</h4>
+        <ul id="listOfActors">
+
+        </ul>
+    </div>
+    <div class="mx-auto mt-5" style="width: 200px; font-size: 20px;">
+        <h4>Reviews</h4>
+        <ul id="listOfReviews">
+
+        </ul>
+    </div>
+
+    <div style="margin-top: 20px; margin-bottom: 50px; display: flex; justify-content: center;">
+        <button type="button" class="btn btn-primary mr-3" id="addToCart">Add to cart</button>
+        <button type="button" class="btn btn-primary mr-3" id="clearCart">Clear cart</button>
+        <button type="button" class="btn btn-primary" id="review">Leave Review</button>
+    </div>
+
+
+
+    </div>
+
+    <style>
+        #listOfReviews {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #listOfReviews li:before {
+            content: "-";
+            color: #000;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        #listOfReviews li {
+            margin-bottom: 20px;
+        }
+    </style>
+
+</body>
+
+</html>

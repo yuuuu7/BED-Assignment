@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Customer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const userData = JSON.parse(localStorage.getItem('userInfo'))
+
+            if (!userData) {
+
+            } else if (userData[0].title == "customer") {
+                alert("Only staff are able to view this page")
+                window.location.href = ('http://localhost:3001/homePage.html')
+            }
+
+            function getStoreAddrs() {
+                $.ajax({
+                    url: "http://localhost:8081/store/address",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data, textStatus, xhr) {
+                        if (data != null) {
+                            localStorage.setItem('storeAddresses', JSON.stringify(data))
+                            const allAddresses = JSON.parse(localStorage.getItem('storeAddresses'))
+                            var picker = document.getElementById("storePicker");
+
+                            for (var i = 0; i < allAddresses.length; i++) {
+                                var option = document.createElement("option");
+                                option.value = allAddresses[i].address_id;
+                                option.text = "store " + allAddresses[i].store_id + " (" + allAddresses[i].address + ")";
+                                picker.appendChild(option);
+                            }
+
+                        } else {
+                            console.log(textStatus)
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log("error in operation getting address")
+                    },
+                })
+            }
+            getStoreAddrs()
+
+            function getAllCities() {
+                $.ajax({
+                    url: "http://localhost:8081/cities",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data, textStatus, xhr) {
+                        if (data != null) {
+                            localStorage.setItem('allCities', JSON.stringify(data))
+
+                            const allCities = JSON.parse(localStorage.getItem('allCities'))
+
+                            var picker = document.getElementById("cityPicker");
+
+                            for (var i = 0; i < allCities.length; i++) {
+                                var option = document.createElement("option");
+                                option.value = allCities[i].country_id;
+                                option.text = allCities[i].city;
+                                picker.appendChild(option);
+                            }
+                        } else {
+                            console.log(textStatus)
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log("error in operation")
+                    },
+                })
+            }
+
+            getAllCities()
+
+
+            $("#addCustomer").click(function () {
+                const firstName = $("#first_name").val()
+                const lastName = $("#last_name").val()
+                const email = $("#email").val()
+                const address1 = $("#address1").val()
+                const address2 = $("#address2").val()
+                const district = $("#district").val()
+                const cityId = $("#cityPicker").val()
+                const postalCode = $("#postalCode").val()
+                const phoneNum = $("#phoneNum").val()
+                const storeId = $("#storePicker").val()
+
+                if (firstName == null || lastName == null || email == null || address1 == null || district == null || cityId == null || postalCode == null || phoneNum == null || storeId == null) {
+                    alert("Information Missing!")
+                    return
+                }
+
+                const addressObj = {
+                    address_line1: address1,
+                    address_line2: address2,
+                    district: district,
+                    city_id: cityId,
+                    postal_code: postalCode,
+                    phone: phoneNum
+                }
+
+                const dataObject = {
+                    store_id: storeId,
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email,
+                    address: addressObj,
+                }
+                const data = JSON.stringify(dataObject)
+                $.ajax({
+                    url: "http://localhost:8081/customers",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
+                    data: data,
+                    success: function (data, textStatus, xhr) {
+                        if (data != null) {
+                            console.log(data)
+                            alert("Customer Added with ID: " + data.insertId)
+                        } else {
+                            console.log(textStatus)
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        alert("Please login as an Admin in order to add a customer")
+                    },
+                })
+                return false
+            })
+
+        })
+
+
+
+
+
+
+    </script>
+</head>
+
+
+<body style="background-color: antiquewhite;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="http://localhost:3001/homePage.html">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/shoppingCart.html">Shopping Cart <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/profile.html">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="http://localhost:3001/addCustomer.html">Add Customer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addActor.html">Add Actor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addDVD.html">Add DVD</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="text-center mt-5">
+            <h1>Add a new Customer</h1>
+        </div>
+        <div class="d-flex justify-content-center mt-5">
+            <h5>Enter First Name of Customer:</h5>
+        </div>
+        <div class="d-flex justify-content-center">
+            <input id="first_name" placeholder="first name" />
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+            <h5>Enter Last Name of Customer:</h5>
+        </div>
+        <div class="d-flex justify-content-center">
+            <input id="last_name" placeholder=" last name" />
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+            <h5>Enter Email of Customer:</h5>
+        </div>
+        <div class="d-flex justify-content-center">
+            <input id="email" placeholder=" email" />
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+            <h6>Enter Address Details of Customer:</h6>
+        </div>
+        <div style="margin-left: 390px;">
+            <input id="address1" placeholder=" address line 1" class="w-50 d-block mb-3" />
+            <input id="district" placeholder=" district" />
+            <select id="cityPicker" class="w-25">
+                <option value="none">Select your City</option>
+            </select>
+            <input id="address2" placeholder=" address line 2" class="w-50 d-block mb-3" />
+            <input id="postalCode" placeholder=" postal code" />
+            <input id="phoneNum" placeholder=" phone number" />
+        </div>
+
+
+        <div class="d-flex justify-content-center mb-3 mt-4">
+            <label for="exampleInputEmail1" class="form-label mr-3">Select Store</label>
+            <select id="storePicker" class="w-25">
+                <option value="none"></option>
+            </select>
+        </div>
+        <div class="d-flex justify-content-center mt-5">
+            <button type="submit" class="btn btn-primary background-color-red" id="addCustomer">Add Customer</button>
+        </div>
+
+    </div>
+
+
+
+</body>
+
+</html>

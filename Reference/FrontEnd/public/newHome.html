@@ -1,0 +1,226 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Friendbook</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const filmTitle = ""
+            const maxPrice = ""
+            const catName = "none"
+
+
+                $.ajax({
+                    url: "http://localhost:8081/films?filmTitle=" + filmTitle + "&maxPrice=" + maxPrice + "&catName=" + catName,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data, textStatus, xhr) {
+                        if (data != null) {
+                            localStorage.setItem('filmsByTitle', JSON.stringify(data))
+                        } else {
+                            console.log(textStatus)
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log("error in operation")
+                    },
+                })
+            //retrieve the userInfo from localStorage
+            const filmData = JSON.parse(localStorage.getItem('filmsByTitle'))
+            console.log(filmData)
+            const itemsPerTab = 1000000
+            const numOfTabs = Math.ceil(filmData.length / itemsPerTab)
+            const tabContentArr = []
+            for (let i = 0; i < filmData.length; i += itemsPerTab) {
+                let tabContent = filmData.slice(i, i + itemsPerTab);
+                tabContentArr.push(tabContent);
+            }
+
+            if (filmData != null) {
+                let tabCode = "";
+                let contentCode = "";
+
+                for (let i = 0; i < numOfTabs; i++) {
+                    let active = "";
+                    let ariaSelected = "false";
+                    if (i === 0) {
+                        active = "active";
+                        ariaSelected = "true";
+                    }
+                    tabCode +=
+                        `<li class="nav-item">
+                            <a class="nav-link ${active}" id="tab-${i}-tab" data-toggle="tab" href="#content-tab-${i}" role="tab" aria-controls="content-tab-${i}" aria-selected="${ariaSelected}">Page ${i + 1}</a>
+                        </li>`;
+                    let insideContentCode = ""
+
+
+                    for (let k = 0; k < tabContentArr[i].length; k++) {
+                        insideContentCode +=
+                            `
+                            <div class="card" style="width: 20rem; float: left; margin-bottom: 20px; height: 350px; margin-right: 25px;"  onclick="navigateTo('${tabContentArr[i][k].title}', '${tabContentArr[i][k].film_id}' , '${tabContentArr[i][k].description}' , '${tabContentArr[i][k].release_year}', '${tabContentArr[i][k].rental_rate}', '${tabContentArr[i][k].length}', '${tabContentArr[i][k].replacement_cost}', '${tabContentArr[i][k].rating}', '${tabContentArr[i][k].name}')">
+                            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-body">
+                <p class="card-text" style="color:#000000">Title: ${tabContentArr[i][k].title}</p>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+          
+                                `
+
+                    }
+
+                    contentCode +=
+                        `
+                            ${insideContentCode}
+                        `;
+                }
+
+                $("#TabContent").html(contentCode);
+
+            } else {
+                console.log("Data is null")
+            }
+        })
+
+        function navigateTo(title, film_id, description, release_year, rental_rate, length, replacement_cost, rating, catName) {
+            const filmInfo = {
+                title: title,
+                film_id: film_id,
+                description: description,
+                release_year: release_year,
+                rental_rate: rental_rate,
+                length: length,
+                replacement_cost: replacement_cost,
+                rating: rating,
+                catName: catName,
+            }
+
+
+            localStorage.setItem('filmInfo', JSON.stringify(filmInfo))
+            window.location.assign("http://localhost:3001/details.html")
+        }
+
+    </script>
+</head>
+
+
+<body style="background-color: antiquewhite;">
+
+    <div class="wrapper">
+        <div id="container">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </div>
+
+
+    <ul class="menu">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Shopping Cart</a></li>
+        <li><a href="#">Profile</a></li>
+    </ul>
+    <div class="container">
+        <div id="tabContainer">
+            <div class="tab-content" id="TabContent">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let logo = document.querySelector("#container")
+        let menu = document.querySelector(".menu")
+
+        logo.addEventListener("click", function () {
+            menu.classList.toggle("showMenu")
+        })
+    </script>
+
+</body>
+<style>
+    .wrapper {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    #container {
+        background-color: antiquewhite;
+        float: right;
+        height: 25px;
+        width: 40px;
+        margin-top: 20px;
+        margin-right: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .bar {
+        height: 3px;
+        width: 30px;
+        background-color: orange;
+    }
+
+    .menu {
+        position: absolute;
+        background-color: orange;
+        width: 30%;
+        height: 100vh;
+        padding: 50px;
+        transition: 0.5s;
+        transform: translateX(-500px);
+        z-index: 3;
+    }
+
+    .menu li {
+        list-style-type: none;
+        border-bottom: 1px solid white;
+        padding: 35px 0;
+        text-align: center;
+    }
+
+    .menu li:first-child {
+        font-weight: bold;
+    }
+
+    .menu li a {
+        color: snow;
+        text-decoration: none;
+        font-size: 20px;
+        transition: font-weight 0.2s;
+    }
+
+    .menu li:last-child {
+        border-bottom: none;
+    }
+
+    .menu li a:hover {
+        font-weight: bold;
+    }
+
+    .showMenu {
+        transform: translateX(0);
+    }
+
+    @media screen and (min-width:1000px) {
+        .menu {
+            width: 500px;
+        }
+    }
+
+    @media screen and (max-width:600px) {
+        .menu li a {
+            font-size: 16px;
+        }
+    }
+</style>
+
+</html>

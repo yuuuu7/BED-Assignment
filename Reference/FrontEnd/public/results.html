@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Friendbook</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const filmData = JSON.parse(localStorage.getItem('filmsByTitle'))
+            const itemsPerTab = 40
+            const numOfTabs = Math.ceil(filmData.length / itemsPerTab)
+            const tabContentArr = []
+            for (let i = 0; i < filmData.length; i += itemsPerTab) {
+                let tabContent = filmData.slice(i, i + itemsPerTab);
+                tabContentArr.push(tabContent);
+            }
+            console.log(tabContentArr)
+            if (filmData != null) {
+                let tabCode = "";
+                let contentCode = "";
+                for (let i = 0; i < numOfTabs; i++) {
+                    let active = "";
+                    let ariaSelected = "false";
+                    if (i === 0) {
+                        active = "active";
+                        ariaSelected = "true";
+                    }
+                    tabCode +=
+                        `<li class="nav-item">
+                            <a class="nav-link ${active}" id="tab-${i}-tab" data-toggle="tab" href="#content-tab-${i}" role="tab" aria-controls="content-tab-${i}" aria-selected="${ariaSelected}">Tab ${i + 1}</a>
+                        </li>`;
+                    let insideContentCode = ""
+
+                    for (let k = 0; k < tabContentArr[i].length; k++) {
+                        if (tabContentArr[i][k].image == null) {
+                            insideContentCode +=
+                                `
+                                <div class="card" style="width: 20rem; float: left; margin-bottom: 20px; height: 350px; margin-right: 25px; object-fit: cover;"  onclick="navigateTo('${tabContentArr[i][k].title}', '${tabContentArr[i][k].film_id}' , '${tabContentArr[i][k].description}' , '${tabContentArr[i][k].release_year}', '${tabContentArr[i][k].rental_rate}', '${tabContentArr[i][k].length}', '${tabContentArr[i][k].replacement_cost}', '${tabContentArr[i][k].rating}', '${tabContentArr[i][k].name}', '${tabContentArr[i][k].image}')">
+                                    <img class="card-img-top" src="./image/disc.png" alt="Card image cap"  style="overflow: hidden; width: 200px; align-self: center;">
+                                        <div class="card-body">
+                                            <p class="card-text" style="color:#000000">Title: ${tabContentArr[i][k].title}</p>
+                                            <p class="card-text">${tabContentArr[i][k].description}</p>
+                                            <a href="#" class="btn btn-primary">More details</a>
+                                        </div>
+                                 </div>
+                                `
+                        } else {
+                            const imgUrl = tabContentArr[i][k].image
+                            insideContentCode +=
+                                `
+                                <div class="card" style="width: 20rem; float: left; margin-bottom: 20px; height: 350px; margin-right: 25px; object-fit: cover;"  onclick="navigateTo('${tabContentArr[i][k].title}', '${tabContentArr[i][k].film_id}' , '${tabContentArr[i][k].description}' , '${tabContentArr[i][k].release_year}', '${tabContentArr[i][k].rental_rate}', '${tabContentArr[i][k].length}', '${tabContentArr[i][k].replacement_cost}', '${tabContentArr[i][k].rating}', '${tabContentArr[i][k].name}', '${tabContentArr[i][k].image}')">
+                                    <img class="card-img-top" src="${imgUrl}" alt="Card image cap"  style="overflow: hidden; width: 200px; align-self: center;">
+                                        <div class="card-body">
+                                            <p class="card-text" style="color:#000000">Title: ${tabContentArr[i][k].title}</p>
+                                            <p class="card-text">${tabContentArr[i][k].description}</p>
+                                            <a href="#" class="btn btn-primary">More details</a>
+                                        </div>
+                                </div>
+                                `
+                        }
+
+                    }
+
+                    contentCode +=
+                     `
+                    <div class="tab-pane ${active}" id="content-tab-${i}" aria-labelledby="tab-${i}-tab">
+                            ${insideContentCode}
+                    </div>`
+                }
+                $("#Tab").html(tabCode)
+                $("#TabContent").html(contentCode);
+
+                $(".nav-link").click(function () {
+                    $(".nav-link").removeClass("active");
+                    $(".tab-pane").removeClass("active");
+
+                    $(this).addClass("active");
+                    const paneId = $(this).attr("href");
+                    $(paneId).addClass("active");
+                });
+            } else {
+                console.log("Data is null")
+            }
+        })
+
+        function navigateTo(title, film_id, description, release_year, rental_rate, length, replacement_cost, rating, catName, image) {
+            const filmInfo = {
+                title: title,
+                film_id: film_id,
+                description: description,
+                release_year: release_year,
+                rental_rate: rental_rate,
+                length: length,
+                replacement_cost: replacement_cost,
+                rating: rating,
+                catName: catName,
+                image: image,
+            }
+
+
+            localStorage.setItem('filmInfo', JSON.stringify(filmInfo))
+            window.location.assign("http://localhost:3001/details.html")
+        }
+    </script>
+</head>
+
+
+<body style="background-color: antiquewhite;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="http://localhost:3001/homePage.html">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/shoppingCart.html">Shopping Cart <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/profile.html">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addCustomer.html">Add Customer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addActor.html">Add Actor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addFilm.html">Add Film</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="http://localhost:3001/addDVD.html">Add DVD</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container" style="padding-top: 30px;">
+
+
+        <div id="tabContainer">
+            <ul class="nav nav-tabs" id="Tab">
+            </ul>
+            <div class="tab-content" id="TabContent">
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Leave Review</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const userInfo = JSON.parse(localStorage.getItem("userInfo"))
+            const filmInfo = JSON.parse(localStorage.getItem('filmInfo'))
+            console.log(filmInfo)
+            console.log(userInfo)
+            let headerTitle = document.getElementById("title");
+            let title = document.createTextNode(filmInfo.title);
+            headerTitle.appendChild(title);
+
+            $("#review").click(function () {
+                if (userInfo[0].title == "customer") {
+                    const title = filmInfo.title
+                    const review_text = $("#reviewText").val()
+                    const review_number = $("#slider").val()
+                    const email = userInfo[0].email
+                    const tempToken = localStorage.getItem("token")
+
+                    const dataObject = {
+                        //these must match the spelling of the ones in the app.js
+                        title: title,
+                        review_text: review_text,
+                        review_number: review_number,
+                        email: email,
+                    }
+                    const data = JSON.stringify(dataObject)
+
+                    //send http request
+                    $.ajax({
+                        headers: { "authorization": "Bearer " + tempToken },
+                        url: "http://localhost:8081/film/review",
+                        type: "POST",
+                        data: data,
+                        contentType: "application/json;charset=utf-8",
+                        dataType: "json",
+                        success: function (data, textStatus, xhr) {
+                            if (data != null) {
+                                console.log(data)
+                                alert("Review Made")
+                                window.location.assign("http://localhost:3001/details.html")
+                            } else {
+                                console.log("data is null")
+                            }
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.log(errorThrown)
+                            if (errorThrown == "Internal Server Error") {
+                                alert("You already made a review for this film!")
+                            } else {
+                                alert("Please login to leave a review")
+                            }
+                        },
+                    })
+
+                } else {
+                    alert("Only customers may leave reviews!")
+                }
+            })
+
+        })
+
+    </script>
+</head>
+
+
+<body style="background-color: antiquewhite;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="http://localhost:3001/homePage.html">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/shoppingCart.html">Shopping Cart <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/profile.html">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addCustomer.html">Add Customer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addActor.html">Add Actor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/addDVD.html">Add DVD</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+
+        <div id="cart">
+        </div>
+    </div>
+    <h1 id="title" class="text-center mt-4"></h1>
+    </div>
+
+    <div style="font-size: 30px; display: flex; justify-content: center;" class="mt-4 mb-2">
+        Rating from 1(Horrible) to 5(Amazing)
+    </div>
+    <div style="display: flex; justify-content: center;">
+        <div class="value-display mr-3" style="font-size: 20px;"><span id="value"></span>/5</div>
+        <input type="range" min="1" max="5" step="1" value="3" id="slider">
+    </div>
+
+
+    <div class="d-flex justify-content-center mt-5">
+        <h5 style="margin-right: 10px;"></h5>
+    </div>
+    <div class="d-flex justify-content-center">
+        <textarea id="reviewText" rows="5" style="width: 400px;">
+        </textarea>
+    </div>
+
+
+    <div style="margin-top: 20px; margin-bottom: 50px; display: flex; justify-content: center;">
+        <button type="button" class="btn btn-primary" id="review">Leave Review</button>
+    </div>
+
+
+
+    </div>
+
+
+    <script>
+        var slider = document.getElementById("slider");
+        var valueDisplay = document.getElementById("value");
+        valueDisplay.textContent = slider.value;
+
+        slider.oninput = function () {
+            valueDisplay.textContent = this.value;
+        }
+    </script>
+
+</body>
+
+</html>
