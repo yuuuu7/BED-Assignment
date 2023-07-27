@@ -344,7 +344,33 @@ const Game = {
                 return callback(null, results);
             });
         });
-      }
+      },
+
+        //Retrieve games via search bar
+        getGameBySearch: function (game, callback) {
+            var conn = db.getConnection();
+
+            conn.connect(function (err) {
+                if (err) {
+                    return callback(err);
+                }
+                console.log("Connected to Search EP");
+                
+                // SQL query to select games based on search input
+                var sql = `SELECT * FROM game WHERE title LIKE ?`;
+
+                conn.query(sql, [`%${game.input}%`], function (err, results) {
+                    conn.end();
+
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    console.log(results);
+                    return callback(null, results);
+                });
+            });
+        }
 
       
 }

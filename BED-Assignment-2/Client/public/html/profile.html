@@ -2,12 +2,68 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link href="css/profile.css" rel="stylesheet" />
+        <link href="../css/profile.css" rel="stylesheet" />
         <Title>User Profile</Title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
-        <script>  
+        <!-- compiled & minified CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- compiled JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+        <script src="script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>  
+
+        </script> 
+
+    </head>
+    <body>
+        <div class="header">
+            <nav class="navbar">
+                <div class="navbar-brand">
+                    <a href="#"> <strong><span class="brand-highlight"> SP </span>Games</strong></a>
+                </div>
+                <ul class="navbar-nav d-flex justify-content-between">
+                    <li class="nav-item">
+                        <a href="/" class="HomeLink"><strong>Home</strong></a>
+                        <a href="/explore" class="ExploreLink"><strong>Explore</strong></a>
+                        <a href="/profile" class="LoginLink"><strong>Profile</strong></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="card">
+                <img id="profilepic" alt="Profile" style="width:100%">
+                <p class="username"> <label>Username: </label>
+                    <input type="text" id="username"> </br></p>
+                <p class="email"><label>Email: </label>
+                    <input type="text" id="email"> </p>
+                <p><span id="msg"></span></p>
+                <a href="#"><i class="fa fa-dribbble"></i></a> 
+                <a href="#"><i class="fa fa-twitter"></i></a> 
+                <a href="#"><i class="fa fa-linkedin"></i></a> 
+                <a href="#"><i class="fa fa-facebook"></i></a> 
+                <p><input type="button" id="Update" value="Update Profile" /></p>
+                <p><input type="button" id="Logout" value="Log Out" /></p>
+                </div>
+
+        <script>
+            var userData = localStorage.getItem('userInfo');
+            var userJsonData = JSON.parse(userData);
+            var username = userJsonData[0].username;
+            var useremail = userJsonData[0].email;
+            var userpic = userJsonData[0].profile_pic_url;
+            var userid = userJsonData[0].userid;
+            document.getElementById("username").value = username; 
+            document.getElementById("email").value = useremail;  
+
+            var profilePicElement = document.getElementById("profilepic");
+
+            if (userpic) {
+                profilePicElement.src = profile_pic_url;
+            } else {
+                profilePicElement.src = "../default_pfp.jpg";
+            }
 
             //Function to clear cookie
             function clearCookie(name) {
@@ -16,7 +72,10 @@
 
             const baseURL = 'http://localhost:3000'
 
-            Update.addEventListener('click', async (event) => {
+            const UpdateButton = document.getElementById('Update')
+            const LogoutButton = document.getElementById('Logout')
+
+            UpdateButton.addEventListener('click', async (event) => {
                 event.preventDefault();
 
                 const username = document.getElementById('username').value;
@@ -33,67 +92,14 @@
                     console.log(error)
                 })
                 })
-
-            Logout.addEventListener('click', async (event) => {
+            
+            LogoutButton.addEventListener('click', async (event) => {
                 event.preventDefault();
                 localStorage.removeItem('userInfo');
                 clearCookie('token');
-                window.location.assign = `${baseURL}/`
+                window.location.assign("http://localhost:3001/login")
             })
                 
-
-            var userData = localStorage.getItem('userInfo');
-            var userJsonData = JSON.parse(userData);
-            var username = userJsonData[0].username;
-            var useremail = userJsonData[0].email;
-            var userpic = userJsonData[0].profile_pic_url;
-            var userid = userJsonData[0].id;
-            document.getElementById("username").value = username; 
-            document.getElementById("email").value = useremail;  
-
-            var profilePicElement = document.getElementById("profilepic");
-
-            if (userpic) {
-                profilePicElement.src = profile_pic_url;
-            } else {
-                profilePicElement.src = "../default_pfp.jpg";
-            }
-        </script> 
-
-    </head>
-    <body>
-            <div class="card">
-                    <img id="profilepic" alt="Profile" style="width:100%">
-                    <p class="username"> <label>Username: </label>
-                        <input type="text" id="username"> </br></p>
-                    <p class="email"><label>Email: </label>
-                        <input type="text" id="email"> </p>
-                    <p><span id="msg"></span></p>
-                    <a href="#"><i class="fa fa-dribbble"></i></a> 
-                    <a href="#"><i class="fa fa-twitter"></i></a> 
-                    <a href="#"><i class="fa fa-linkedin"></i></a> 
-                    <a href="#"><i class="fa fa-facebook"></i></a> 
-                    <p><input type="button" id="Update" value="Update Profile" /></p>
-                    <p><input type="button" id="Logout" value="Log Out" /></p>
-                  </div>
-
-        <script>
-            var userData = localStorage.getItem('userInfo');
-            var userJsonData = JSON.parse(userData);
-            var username = userJsonData[0].username;
-            var useremail = userJsonData[0].email;
-            var userpic = userJsonData[0].profile_pic_url;
-            var userid = userJsonData[0].id;
-            document.getElementById("username").value = username; 
-            document.getElementById("email").value = useremail;  
-
-            var profilePicElement = document.getElementById("profilepic");
-
-            if (userpic) {
-                profilePicElement.src = profile_pic_url;
-            } else {
-                profilePicElement.src = "../default_pfp.jpg";
-            }
         </script>
 
     </body>

@@ -144,7 +144,7 @@ const User = {
 	},
 
     // Updates a user's details
-    updateUser: function(user, callback) {
+    updateUser: function(user, userid, callback) {
         var conn = db.getConnection();
 
         conn.connect(function(err) {
@@ -166,7 +166,7 @@ const User = {
                         return callback('Email already exists', null);
                     }
 
-                    conn.query(sql2, [user.username, user.email, user.userid], function(err, results) {
+                    conn.query(sql2, [user.username, user.email, userid], function(err, results) {
 
                         if(err) {
                             return callback(err,null);

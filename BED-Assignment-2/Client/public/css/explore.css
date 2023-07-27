@@ -1,55 +1,14 @@
-@charset "utf-8";
-
-body {
-  margin: 0;
-  padding: 0;
-  background-image: url("../steam.jpg"); /* Replace with your image path */
-  background-size: cover; /* Adjust to "contain" if you want the image to fit entirely within the background */
-  background-repeat: no-repeat; /* Prevent the image from repeating if smaller than the screen */
-  background-attachment: fixed;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    max-width: 300px;
-    margin: auto;
-    text-align: center;
-    background-color: grey;
-  }
-  
-  .username, .email {
-    color: grey;
-    font-size: 16px;
-    padding-top: 10px;
-    
-  }
-  
-  button {
-    border: none;
-    outline: 0;
-    display: inline-block;
-    padding: 8px;
-    color: white;
-    background-color: #000;
-    text-align: center;
-    cursor: pointer;
+/* Reset default styles and add some basic styles for the navbar */
+  body {
+    margin: 0;
+    padding: 0;
+    background-image: url("../wallpaper.jpg"); /* Replace with your image path */
+    background-size: cover; /* Adjust to "contain" if you want the image to fit entirely within the background */
+    background-repeat: no-repeat; /* Prevent the image from repeating if smaller than the screen */
+    background-attachment: fixed;
     width: 100%;
-    font-size: 18px;
   }
   
-  a {
-    text-decoration: none;
-    font-size: 22px;
-    color: black;
-  }
-  
-  button:hover, a:hover {
-    opacity: 0.7;
-  }
-
   /* Styling for the header container */
   .header {
     color: #fff;
@@ -59,7 +18,7 @@ body {
     width: 100%;
     z-index: 999; /* Ensure the navbar stays above other elements */
   }
-  
+
   /* Styling for the navbar */
   .navbar {
     display: flex;
@@ -137,3 +96,31 @@ body {
   .nav-item a:hover {
     color: grey; /* Set the color to grey when hovered over */
   }
+
+  /* Add this CSS to your existing 'explore.css' or create a new CSS file and link it in the <head> section */
+.search-container {
+  display: flex;
+  align-items: center;
+  margin: 10px auto;
+  max-width: 1000px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 20%;
+}
+
+#search-bar {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 5px;
+}
+
+#search-button {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 5px;
+}

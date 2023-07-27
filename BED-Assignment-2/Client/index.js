@@ -20,7 +20,7 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/explore", verifyToken, (req,res) => {
-    res.sendFile("/public/html/home.html", { root: __dirname })
+    res.sendFile("/public/html/explore.html", { root: __dirname })
 })
 
 app.get("/403", (req,res) => {

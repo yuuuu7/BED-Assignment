@@ -80,7 +80,9 @@ app.get('/users/:userid', (req,res) => {
 
 app.put('/users/:userid', (req,res) => {
 
-  User.updateUser(req.body, req.params.userid, (err,results) => {
+  var userid = req.params.userid
+
+  User.updateUser(req.body, userid, (err,results) => {
     if (err) {
       if (err === "Email already exists") {
         res.status(422).send("Email already exists");
@@ -222,6 +224,18 @@ app.put('/game/:gameid', (req,res) => {
       res.status(204).send()
   })
 })
+
+app.get('/game/searchBar', (req,res) => {
+  
+  Game.getGameBySearch(req.body, (err,results) => {
+    if(err) {
+      res.status(500).send()
+      return
+    }
+
+    res.status(200).send(results)
+  })
+});
 
 //============================================================== Review APIs ===============================================================================
 
