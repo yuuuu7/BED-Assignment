@@ -106,7 +106,7 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 5px;
-  margin-top: 20%;
+  margin-top: 5%;
 }
 
 #search-bar {
@@ -123,4 +123,34 @@
   cursor: pointer;
   border-radius: 5px;
   margin-left: 5px;
+}
+
+/* Custom CSS for game cards */
+#search-results {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Updated property to center the cards */
+  max-width: 1700px;
+  margin: 0 auto;
+  color: white;
+  font-size: 30px;
+}
+
+.game-card {
+  width: 300px; /* Adjust this width as needed for your card size */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 20px; /* Changed margin to add space on all sides */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 20px;
+  color: white;
+}
+
+.game-card h3 {
+  margin-top: 0;
+}
+
+.game-card p {
+  margin-bottom: 0;
 }

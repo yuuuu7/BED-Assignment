@@ -162,26 +162,26 @@ Game.insertNewGame(req.body, (err, results) => {
 });
 });
 
-// // Get game by platform ID
-// app.get('/game/:platformid', (req,res) => {
+// Get game by platform ID
+app.get('/game/:platformid', (req,res) => {
 
-//   var platformid = req.params.platformid
+  var platformid = req.params.platformid
 
-//   Game.getGameByPlatform(platformid, (err,results) => {
+  Game.getGameByPlatform(platformid, (err,results) => {
 
-//       if(err) {
-//           res.status(500).send()
-//           return
-//       }
+      if(err) {
+          res.status(500).send()
+          return
+      }
 
-//       if(results.length === 0) {
-//           res.status(404).send()
-//           return
-//       }
+      if(results.length === 0) {
+          res.status(404).send()
+          return
+      }
 
-//       res.status(200).send(results)
-//   })
-// })
+      res.status(200).send(results)
+  })
+})
 
 // Delete game by ID
 app.delete('/game/:gameid', (req,res) => {
@@ -231,6 +231,24 @@ app.get('/game', (req,res) => {
     if(err) {
       console.log(err)
       res.status(500).send()
+      return
+    }
+
+    res.status(200).send(results)
+  })
+});
+
+app.get('/game/allplatforms/lol', (req,res) => {
+
+  Game.getAllGamesPlatform(req.query.search, (err,results) => {
+    if(err) {
+      console.log(err)
+      res.status(500).send()
+      return
+    }
+
+    if (results.length === 0) {
+      res.status(404).send('Data not found');
       return
     }
 

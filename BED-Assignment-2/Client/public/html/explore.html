@@ -39,7 +39,7 @@
     <button id="search-button"><i class="fa fa-search"></i></button>
   </div>
 
-  <div id="search-results">
+  <div class='row' id="search-results">
   </div>
 
 
@@ -62,7 +62,7 @@
       searchResultsContainer.innerHTML = '';
       
       // Make a GET request using Axios
-      axios.get(`${baseURL}/game`, {
+      axios.get(`${baseURL}/game/allplatforms/lol`, {
         params: {
           search: searchInput
         }
@@ -70,20 +70,26 @@
       .then(function (response) {
         // Handle the response (e.g., display the search results)
         const games = response.data;
-        console.log(games);
 
-        games.forEach(function (game) {
+        if (games.length === 0) {
+          searchResultsContainer.innerHTML = '<p>No results found</p>';
+          return;
+        } else {
+          games.forEach(function (game) {
           // Customize the HTML output for displaying each game
           const gameHtml = `
             <div class="game-card">
               <h3>${game.title}</h3>
               <p>${game.description}</p>
+              <p>Platform: ${game.platform_name}</p>
+              <p>Price: ${game.price}</p>
             </div>
           `;
         
         searchResultsContainer.innerHTML += gameHtml;
           
         });
+        }
 
       })
       .catch(function (error) {

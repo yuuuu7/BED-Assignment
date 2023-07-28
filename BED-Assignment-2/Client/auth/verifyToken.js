@@ -19,8 +19,8 @@ function verifyToken(req, res, next){
         if(err){
             res.redirect('/403')
         }else{
-            req.userid=decoded.userid; //decode the userid and store in req for use
-            req.role = decoded.role; //decode the role and store in req for use
+            
+            req.decoded = decoded;
             next();
         }
        });

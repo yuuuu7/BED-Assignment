@@ -1,3 +1,4 @@
+const { call } = require('function-bind');
 var db=require('./databaseConfig.js');
 
 const Game = {
@@ -95,38 +96,39 @@ const Game = {
     },
   
 
-    // //Retrieves games by Platform
-    // getGameByPlatform: function(platformid, callback) {
-    //     var conn = db.getConnection();
+    //Retrieves games by Platform
+    getGameByPlatform: function(platformid, callback) {
+        var conn = db.getConnection();
       
-    //     conn.connect(function(err) {
-    //       if (err) {
-    //         console.log(err);
-    //         return callback(err);
-    //       } else {
-    //         console.log("Connected");
+        conn.connect(function(err) {
+          if (err) {
+            console.log(err);
+            return callback(err);
+          } else {
+            console.log("Connected to getGameByPlatform EP");
             
-    //         //Selects prices based on the position of the platform ids in the platformid column. E.g. 35,45,55  1,2,3  Platform id: 1 = 35, 2 = 45, 3 = 55
-    //         var sql = `
-    //           SELECT game.id, game.title, game.description, 
-    //           SUBSTRING_INDEX(SUBSTRING_INDEX(game.price, ',', FIND_IN_SET(?, game.platformid)), ',' , -1) AS price, 
-    //           (SELECT platform_name FROM platform WHERE id=?) AS platform_name,
-    //           category.id AS catid, category.catname, game.year, game.created_at
-    //           FROM game
-    //           JOIN category ON game.categoryid = category.id
-    //           WHERE FIND_IN_SET(?, game.platformid) > 0
-    //           `;
+            //Selects prices based on the position of the platform ids in the platformid column. E.g. 35,45,55  1,2,3  Platform id: 1 = 35, 2 = 45, 3 = 55
+            var sql = `
+              SELECT game.id, game.title, game.description, 
+              SUBSTRING_INDEX(SUBSTRING_INDEX(game.price, ',', FIND_IN_SET(?, game.platformid)), ',' , -1) AS price, 
+              (SELECT platform_name FROM platform WHERE id=?) AS platform_name,
+              category.id AS catid, category.catname, game.year, game.created_at
+              FROM game
+              JOIN category ON game.categoryid = category.id
+              WHERE FIND_IN_SET(?, game.platformid) > 0
+              `;
       
-    //         conn.query(sql, [platformid, platformid, platformid], function(err, results) {
-    //           if (err) {
-    //             return callback(err, null);
-    //           }
+            conn.query(sql, [platformid, platformid, platformid], function(err, results) {
+                conn.end();
+              if (err) {
+                return callback(err, null);
+              }
       
-    //           return callback(null, results);
-    //         });
-    //       }
-    //     });
-    //   },
+              return callback(null, results);
+            });
+          }
+        });
+      },
 
       // Deletes a game from the database based on its ID
       deleteGameByID: function(gameid, callback)  {
@@ -370,7 +372,77 @@ const Game = {
                     return callback(null, results);
                 });
             });
-        }
+        },
+
+        //Retrieves games by Platform
+        getAllGamesPlatform: function (search, callback) {
+            var conn = db.getConnection();
+          
+            conn.connect(function (err) {
+              if (err) {
+                console.log(err);
+                return callback(err);
+              } else {
+                console.log("Connected to getAllGamesPlatform EP");
+          
+                var sql = 'SELECT * FROM platform';
+                var sql2 = `
+                  SELECT game.id, game.title, game.description, 
+                  SUBSTRING_INDEX(SUBSTRING_INDEX(game.price, ',', FIND_IN_SET(?, game.platformid)), ',' , -1) AS price, 
+                  (SELECT platform_name FROM platform WHERE id=?) AS platform_name,
+                  category.id AS catid, category.catname, game.year, game.created_at
+                  FROM game
+                  JOIN category ON game.categoryid = category.id
+                  WHERE FIND_IN_SET(?, game.platformid) > 0
+                  AND game.title LIKE ?
+                `;
+          
+                conn.query(sql, function (err, results) {
+                  if (err) {
+                    return callback(err, null);
+                  }
+          
+                  if (results.length === 0) {
+                    console.log('empty');
+                    return callback(null, null);
+                  }
+          
+                  const promises = [];
+                  const resultsArray = [];
+          
+                  for (let i = 1; i <= results.length; i++) {
+                    const queryPromise = new Promise((resolve, reject) => {
+                      conn.query(sql2, [i, i, i, `%${search}%`], function (err, results) {
+                        if (err) {
+                          reject(err);
+                        } else {
+                          resolve(results);
+                        }
+                      });
+                    });
+          
+                    promises.push(queryPromise);
+                  }
+          
+                  Promise.all(promises)
+                    .then((resultsArrays) => {
+                      resultsArrays.forEach((array) => {
+                        resultsArray.push(...array);
+                      });
+          
+                      console.log(resultsArray);
+                      callback(null, resultsArray);
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      callback(err, null);
+                    });
+                });
+              }
+            });
+          }
+          
+          
 
       
 }

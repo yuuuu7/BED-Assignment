@@ -11,6 +11,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/profile", verifyToken, (req, res) => {
+
+  const decodedToken = req.decoded;
+
+  console.log(decodedToken);
+  
   res.sendFile("/public/html/profile.html", { root: __dirname });
 });
 
