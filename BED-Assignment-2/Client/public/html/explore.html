@@ -76,13 +76,20 @@
           return;
         } else {
           games.forEach(function (game) {
+
+          if (game.image_name === '') {
+            game.image_name = 'noimage.jpg';
+          }
+
           // Customize the HTML output for displaying each game
           const gameHtml = `
             <div class="game-card">
-              <h3>${game.title}</h3>
-              <p>${game.description}</p>
-              <p>Platform: ${game.platform_name}</p>
-              <p>Price: ${game.price}</p>
+              <a href="link-to-game-details-page?id=${game.id}"> <!-- Replace 'link-to-game-details-page' with the actual URL of the game details page -->
+                <img src="../${game.image_name}" alt="${game.title}">
+                <h3>${game.title}</h3>
+              </a>
+              <p>${game.platform_name}</p>
+              <p>Price: $${game.price}</p>
             </div>
           `;
         

@@ -387,7 +387,7 @@ const Game = {
           
                 var sql = 'SELECT * FROM platform';
                 var sql2 = `
-                  SELECT game.id, game.title, game.description, 
+                  SELECT game.id, game.title, game.description, game.image_name,
                   SUBSTRING_INDEX(SUBSTRING_INDEX(game.price, ',', FIND_IN_SET(?, game.platformid)), ',' , -1) AS price, 
                   (SELECT platform_name FROM platform WHERE id=?) AS platform_name,
                   category.id AS catid, category.catname, game.year, game.created_at
