@@ -130,6 +130,16 @@ app.post('/platform', (req, res) => {
   });
 });
 
+app.get('/platform', (req,res) => {
+  Platform.getAllPlatformNames((err,results) => {
+    if(err) {
+      res.status(500).send()
+    }
+
+    res.status(200).send(results)
+  })
+})
+
 //============================================================== Game APIs ===============================================================================
 
 // Insert a new game

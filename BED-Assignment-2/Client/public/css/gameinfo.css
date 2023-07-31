@@ -1,7 +1,7 @@
-/* Reset default styles and add some basic styles for the navbar */
-  body {
+body {
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif;
     background-image: url("../steam.jpg"); /* Replace with your image path */
     background-size: cover; /* Adjust to "contain" if you want the image to fit entirely within the background */
     background-repeat: no-repeat; /* Prevent the image from repeating if smaller than the screen */
@@ -9,8 +9,68 @@
     width: 100%;
   }
   
-  /* Styling for the header container */
-  .header {
+  .game-details-container {
+    width: 80%;
+    max-width: 1000px;
+    margin: 200px auto;
+    display: flex;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .game-image-container {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+  }
+  
+  #game-image {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .game-info-container {
+    flex: 2;
+    padding: 20px;
+  }
+  
+  #game-title {
+    font-size: 24px;
+    color: white;
+    margin: 0;
+  }
+  
+  #game-description {
+    font-size: 16px;
+    color: white;
+  }
+  
+  .platform-buttons {
+    margin-top: 20px;
+  }
+  
+  .platform-button {
+    padding: 8px 16px;
+    margin-right: 10px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: transparent;
+    outline: 1px solid #fff;
+  }
+  
+  .platform-button:hover {
+    background-color: wheat;
+  }
+  
+  .platform-button.selected {
+    background-color: wheat;
+  }
+
+
+/* Styling for the header container */
+.header {
     color: #fff;
     position: fixed;
     top: 0;
@@ -98,69 +158,3 @@
   .nav-item a:hover {
     color: grey; /* Set the color to grey when hovered over */
   }
-
-  /* Add this CSS to your existing 'explore.css' or create a new CSS file and link it in the <head> section */
-.search-container {
-  display: flex;
-  align-items: center;
-  margin: 10px auto;
-  max-width: 1000px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 5px;
-  margin-top: 10%;
-}
-
-#search-bar {
-  flex: 1;
-  border: none;
-  outline: none;
-  padding: 5px;
-}
-
-#search-button {
-  background-color: #f0f0f0;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-left: 5px;
-}
-
-/* Custom CSS for game cards */
-#search-results {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center; /* Updated property to center the cards */
-  max-width: 1700px;
-  margin: 0 auto;
-  color: white;
-  font-size: 30px;
-}
-
-.game-card {
-  width: 300px; /* Adjust this width as needed for your card size */
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  margin: 20px; /* Changed margin to add space on all sides */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-size: 15px;
-  color: white;
-  text-align: center;
-  background-color: grey;
-}
-
-.game-card h3 {
-  margin-top: 5px;
-  color: white;
-}
-
-.game-card p {
-  margin-bottom: 0;
-}
-
-.game-card img {
-  max-width: 100%; /* Ensure the image doesn't exceed the width of the card */
-  height: auto; /* Let the height adjust automatically to maintain the aspect ratio */
-}

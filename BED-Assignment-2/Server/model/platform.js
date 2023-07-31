@@ -41,6 +41,34 @@ const Platform = {
                 });
             };
         });
+    },
+
+    // Gets all platforms from the database
+    getAllPlatformNames: function(callback) {
+        var conn = db.getConnection();
+
+        conn.connect(function(err) {
+            if(err) {
+                console.log(err);
+                return callback(err, null);
+            } else {
+                console.log("Connected!");
+
+                // SQL query to get all platforms
+                var sql = 'SELECT platform.platform_name FROM platform';
+
+                conn.query(sql, function(err, results) {
+                    conn.end();
+
+                    if(err) {
+                        console.log(err);
+                        return callback(err, null);
+                    }
+
+                    return callback(null, results);
+                });
+            };
+        });
     }
 }
 

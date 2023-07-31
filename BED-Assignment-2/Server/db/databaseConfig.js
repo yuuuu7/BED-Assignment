@@ -6,7 +6,7 @@ var dbConnect = {
         var conn = mysql.createConnection({
             host: "localhost",
             user: "root",
-            password: "Limyuliang21-",
+            password: "root",
             database: "sp_games",
             dateStrings: true
 

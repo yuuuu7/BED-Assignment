@@ -36,6 +36,10 @@ app.get("/403", (req,res) => {
   res.sendFile("/public/html/403.html", { root: __dirname })
 })
 
+app.get("/gameinfo", (req,res) => {
+  res.sendFile("/public/html/gameinfo.html", { root: __dirname })
+})
+
 // Serving static files (public directory) - No need for authentication
 app.use(serveStatic(__dirname + '/public'));
 

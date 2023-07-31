@@ -31,86 +31,88 @@
 .header {
   color: #fff;
   position: fixed;
-  top: 7px;
-  left: 5px;
+  top: 0;
+  left: 0;
   width: 100%;
   z-index: 999; /* Ensure the navbar stays above other elements */
 }
 
-  /* Styling for the navbar */
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-  }
-  
-  /* Nav Brand Styling */
-  .navbar-brand a {
-    color: #fff; /* Set the default color of the brand text */
-    font-size: 30px;
-    text-decoration: none;
-    padding-left: 10px;
-  }
-  
-  
-  /* Optional: Remove the underline from the entire brand on hover */
-  .navbar-brand a:hover{
-    text-decoration: none;
-    color: grey;
-    
-  }
+/* Styling for the navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-left: 7px;
+  margin-top: 10px;
+}
 
-  .brand-highlight {
-    color: red; /* Set the highlight color to red */
-  }
-  
-  
-  /* Style the navbar links */
-  .navbar-nav {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 10px;
-  }
+/* Nav Brand Styling */
+.navbar-brand a {
+  color: #fff; /* Set the default color of the brand text */
+  font-size: 30px;
+  text-decoration: none;
+  padding-left: 10px;
+}
 
-  .navbar-nav li a {
-    text-decoration: none;
-    padding: 10px; /* Adjust this value to add padding around the words */
-    font-size: 20px;
-  }
 
-  .nav-item {
-    margin-right: 20px;
-  }
+/* Optional: Remove the underline from the entire brand on hover */
+.navbar-brand a:hover{
+  text-decoration: none;
+  color: grey;
   
-  .nav-item a {
-    color: #fff; /* Set the default color of the links */
-    font-size: 18px;
-    text-decoration: none;
-    position: relative; /* Required for pseudo-element */
-    transition: color 0.3s; /* Smooth color transition */
-  }
-  
-  /* Pseudo-element to create the highlight effect */
-  .nav-item a::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px; /* Set the height of the highlight */
-    background-color: #fff; /* Set the color of the highlight */
-    transform: scaleX(0); /* Initial scaling to make it invisible */
-    transform-origin: left;
-    transition: transform 0.3s; /* Smooth transform transition */
-  }
-  
-  /* Highlight effect on hover */
-  .nav-item a:hover::before {
-    transform: scaleX(1); /* Scale the highlight to full width on hover */
-  }
-  
-  .nav-item a:hover {
-    color: grey; /* Set the color to grey when hovered over */
-  }
+}
+
+.brand-highlight {
+  color: red; /* Set the highlight color to red */
+}
+
+
+/* Style the navbar links */
+.navbar-nav {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+}
+
+.navbar-nav li a {
+  text-decoration: none;
+  padding: 10px; /* Adjust this value to add padding around the words */
+  font-size: 20px;
+}
+
+.nav-item {
+  margin-right: 20px;
+}
+
+.nav-item a {
+  color: #fff; /* Set the default color of the links */
+  font-size: 18px;
+  text-decoration: none;
+  position: relative; /* Required for pseudo-element */
+  transition: color 0.3s; /* Smooth color transition */
+}
+
+/* Pseudo-element to create the highlight effect */
+.nav-item a::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px; /* Set the height of the highlight */
+  background-color: #fff; /* Set the color of the highlight */
+  transform: scaleX(0); /* Initial scaling to make it invisible */
+  transform-origin: left;
+  transition: transform 0.3s; /* Smooth transform transition */
+}
+
+/* Highlight effect on hover */
+.nav-item a:hover::before {
+  transform: scaleX(1); /* Scale the highlight to full width on hover */
+}
+
+.nav-item a:hover {
+  color: grey; /* Set the color to grey when hovered over */
+}

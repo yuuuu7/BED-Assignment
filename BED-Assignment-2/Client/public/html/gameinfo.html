@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search</title>
+  <!-- customised CSS -->
+  <link href="../css/gameinfo.css" rel="stylesheet"/>
+  <!-- compiled & minified CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- compiled JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+</head>
+
+<body>
+
+    <div class="header">
+      <nav class="navbar">
+          <div class="navbar-brand">
+              <a href="#"> <strong><span class="brand-highlight"> SP </span>Games</strong></a>
+          </div>
+          <ul class="navbar-nav d-flex justify-content-between">
+              <li class="nav-item">
+                  <a href="/" class="HomeLink"><strong>Home</strong></a>
+                  <a href="/explore" class="ExploreLink"><strong>Explore</strong></a>
+                  <a href="/profile" class="LoginLink"><strong>Profile</strong></a>
+              </li>
+          </ul>
+      </nav>
+  </div>
+
+  <div class="game-details-container">
+    <div class="game-image-container">
+      <img id="game-image" src="" alt="Game Image">
+    </div>
+    <div class="game-info-container">
+      <h1 id="game-title"></h1>
+      <p id="game-description"></p>
+      <div class="platform-buttons" id="platform-selection">
+      </div>
+      <p id="game-price"></p>
+    </div>
+  </div>
+
+</body>
+
+<script>
+    
+    var selected_game = localStorage.getItem('selected_game');
+    var selected_game = JSON.parse(selected_game);
+    var game_id = selected_game[0].id
+    var game_title = selected_game[0].title
+    var game_description = selected_game[0].description
+    var game_image_name = selected_game[0].image_name
+    var game_price = selected_game[0].price
+    var game_platformid = selected_game[0].game_platformid
+
+    var game_price = game_price.split(",")
+
+    const platformButtonContainer = document.getElementById('platform-selection')
+
+    axios.get('http://localhost:3000/platform')
+    .then((response) => {
+        const platformList = response.data
+
+        if (game_price.length > platformList) {
+            windows.location.assign('http://localhost:3001/')
+        }
+
+        const platform_to_price_dict = {}
+        var counter = 0
+        for (let i = 0; i < platformList.length; i++) {
+
+            if (i > game_price.length) {
+                break
+            } 
+
+            platform_to_price_dict[platformList[i].platform_name] = game_price[i]
+            counter += 1
+        }
+        
+
+        for (let i = 0; i < counter; i++) {
+            const platformButton = `<button class="platform-button" id="${platformList[i].platform_name}">${platformList[i].platform_name}</button>`
+            platformButtonContainer.innerHTML += platformButton
+        }
+
+        // Add event listeners to platform buttons
+        const platformButtons = document.getElementsByClassName('platform-button');
+        const gamePriceElement = document.getElementById('game-price');
+
+        const initialPlatform = Object.keys(platform_to_price_dict)[0];
+        gamePriceElement.innerHTML = `<p>Price: $${platform_to_price_dict[initialPlatform]}</p>`;
+
+        for (const button of platformButtons) {
+        button.addEventListener('click', (event) => {
+            const selectedPlatform = event.target.id;
+            const selectedPrice = platform_to_price_dict[selectedPlatform];
+            gamePriceElement.innerHTML = `<p>Price: $${selectedPrice}</p>`;
+        });
+        }
+
+    })
+    .catch((error) => {
+        console.log(error)
+    })
+    
+
+    var gameImageElement = document.getElementById('game-image');
+    gameImageElement.src = game_image_name;
+
+    var gameTitleElement = document.getElementById('game-title');
+    gameTitleElement.innerText = game_title;
+
+    var gameDescriptionElement = document.getElementById('game-description');
+    gameDescriptionElement.innerText = game_description;
+
+</script>
+</html>
