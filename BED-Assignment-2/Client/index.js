@@ -28,6 +28,10 @@ app.get("/explore", verifyToken, (req,res) => {
     res.sendFile("/public/html/explore.html", { root: __dirname })
 })
 
+app.get("/signup", (req,res) => {
+  res.sendFile("/public/html/signup.html", { root: __dirname })
+})
+
 app.get("/403", (req,res) => {
   res.sendFile("/public/html/403.html", { root: __dirname })
 })

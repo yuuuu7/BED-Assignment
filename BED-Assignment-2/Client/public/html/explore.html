@@ -71,20 +71,21 @@
         // Handle the response (e.g., display the search results)
         const games = response.data;
 
+        console.log(games.length)
         if (games.length === 0) {
           searchResultsContainer.innerHTML = '<p>No results found</p>';
           return;
         } else {
           games.forEach(function (game) {
 
-          if (game.image_name === '') {
+          if (game.image_name === null) {
             game.image_name = 'noimage.jpg';
           }
 
           // Customize the HTML output for displaying each game
           const gameHtml = `
             <div class="game-card">
-              <a href="link-to-game-details-page?id=${game.id}"> <!-- Replace 'link-to-game-details-page' with the actual URL of the game details page -->
+              <a href="${baseURL}/getGameById/game/${game.id}" id='game_select'>
                 <img src="../${game.image_name}" alt="${game.title}">
                 <h3>${game.title}</h3>
               </a>
@@ -104,6 +105,20 @@
       });
     });
 
+    // Attach click event listener to the container for event delegation
+    searchResultsContainer.addEventListener('click', (event) => {
+        // Check if the clicked element is the game card's link
+        const targetLink = event.target.closest('a');
+        if (targetLink && targetLink.id === 'game_select') {
+          // Prevent default behavior (following the link)
+          event.preventDefault();
+
+          // Get the href attribute from the link and navigate to the specified page
+          const getGameDetailsByID = targetLink.getAttribute('href');
+          window.location.assign = './explore.html';
+        }
+      });
+    
   </script>
 </body>
 </html>

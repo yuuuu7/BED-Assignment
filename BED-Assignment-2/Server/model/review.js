@@ -1,5 +1,5 @@
 const { use } = require('../controller/app.js');
-var db=require('./databaseConfig.js');
+var db=require('../db/databaseConfig');
 
 const Review = {
     // Inserts a new review into the database

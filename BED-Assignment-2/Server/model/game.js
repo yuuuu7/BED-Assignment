@@ -1,5 +1,5 @@
 const { call } = require('function-bind');
-var db=require('./databaseConfig.js');
+var db=require('../db/databaseConfig');
 
 const Game = {
   insertNewGame: function(game, callback) {
@@ -439,6 +439,28 @@ const Game = {
                     });
                 });
               }
+            });
+          },
+
+          getGameByID: function(gameid, callback) {
+            var conn = db.getConnection();
+      
+            conn.connect(function(err) {
+              if (err) {
+                return callback(err);
+              }
+      
+              var sql = `SELECT * FROM game WHERE id=?`;
+      
+              conn.query(sql, [gameid], function(err, results) {
+                conn.end();
+      
+                if (err) {
+                  return callback(err);
+                }
+      
+                return callback(null, results);
+              });
             });
           }
           

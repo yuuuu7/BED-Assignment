@@ -1,4 +1,4 @@
-var db=require('./databaseConfig.js');
+var db=require('../db/databaseConfig');
 
 const Category = {
 

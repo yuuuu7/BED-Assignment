@@ -1,4 +1,4 @@
-var db=require('./databaseConfig.js');
+var db=require('../db/databaseConfig');
 var config = require('../config.js');
 var jwt = require('jsonwebtoken');
 

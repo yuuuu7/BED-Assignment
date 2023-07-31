@@ -238,17 +238,27 @@ app.get('/game', (req,res) => {
   })
 });
 
-app.get('/game/allplatforms/lol', (req,res) => {
+app.get('/getGameByID/game/:id', (req,res) => {
 
-  Game.getAllGamesPlatform(req.query.search, (err,results) => {
+  const gameid = req.params.id
+  
+  Game.getGameByID(gameid, (err,results) => {
     if(err) {
       console.log(err)
       res.status(500).send()
       return
     }
 
-    if (results.length === 0) {
-      res.status(404).send('Data not found');
+    res.status(200).send(results)
+  });
+})
+
+app.get('/game/allplatforms/lol', (req,res) => {
+
+  Game.getAllGamesPlatform(req.query.search, (err,results) => {
+    if(err) {
+      console.log(err)
+      res.status(500).send()
       return
     }
 
@@ -304,7 +314,7 @@ module.exports = app;
 //============================================================== Bonus Feature APIs ===============================================================================
 const multer = require('multer')
 const path = require('path')
-var db=require('../model/databaseConfig');
+var db=require('../db/databaseConfig');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
