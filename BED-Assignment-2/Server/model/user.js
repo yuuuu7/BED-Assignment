@@ -123,7 +123,7 @@ const User = {
 						var i;
 						if (result.length == 1) {
 
-							token = jwt.sign({ id: result[0].userid, role: result[0].role }, config.key, {
+							token = jwt.sign({ id: result[0].userid, role: result[0].type }, config.key, {
 								expiresIn: 86400 //expires in 24 hrs
 							});
                             

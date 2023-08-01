@@ -1,7 +1,7 @@
+/* Reset default styles and add some basic styles for the navbar */
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
     background-image: url("../grey-wallpaper.jpeg"); /* Replace with your image path */
     background-size: cover; /* Adjust to "contain" if you want the image to fit entirely within the background */
     background-repeat: no-repeat; /* Prevent the image from repeating if smaller than the screen */
@@ -9,72 +9,8 @@ body {
     width: 100%;
   }
   
-  .game-details-container {
-    width: 80%;
-    max-width: 1000px;
-    margin: 200px auto;
-    display: flex;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .game-image-container {
-    flex: 1;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-  }
-  
-  #game-image {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  .game-info-container {
-    flex: 2;
-    padding: 20px;
-  }
-  
-  #game-title {
-    font-size: 24px;
-    color: white;
-    margin: 0;
-  }
-  
-  #game-description {
-    font-size: 16px;
-    color: white;
-  }
-  
-  .platform-buttons {
-    margin-top: 20px;
-  }
-  
-  .platform-button {
-    padding: 8px 16px;
-    margin-right: 10px;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    background-color: transparent;
-    outline: 1px solid #fff;
-  }
-  
-  .platform-button:hover {
-    background-color: wheat;
-  }
-  
-  .platform-button.selected {
-    background-color: wheat;
-  }
-
-  #game-price {
-    color: white;
-  }
-
-
-/* Styling for the header container */
-.header {
+  /* Styling for the header container */
+  .header {
     color: #fff;
     position: fixed;
     top: 0;
@@ -161,4 +97,42 @@ body {
   
   .nav-item a:hover {
     color: grey; /* Set the color to grey when hovered over */
+  }
+
+  .nav-tabs {
+    border-bottom: 2px solid #dee2e6;
+    margin: 200px auto;
+  }
+
+  .nav-tabs .nav-item {
+    margin-bottom: -1px;
+  }
+
+  .nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    color: #333;
+  }
+
+  .nav-tabs .nav-link.active {
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+  }
+
+  .tab-content {
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 0.25rem 0.25rem;
+  }
+
+  .tab-pane {
+    display: flex;
+  }
+
+  /* Display the active tab */
+  .tab-pane.active {
+    display: block;
   }

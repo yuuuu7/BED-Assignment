@@ -61,6 +61,10 @@
     var game_price = selected_game[0].price
     var game_platformid = selected_game[0].game_platformid
 
+    if (userJsonData[0].type.toLowerCase() === 'admin') {
+      $('#nav-tabs').prepend('<a href="/admin" class="AdminLink"><strong>Admin</strong></a>')
+    }
+
     var game_price = game_price.split(",")
 
     const platformButtonContainer = document.getElementById('platform-selection')

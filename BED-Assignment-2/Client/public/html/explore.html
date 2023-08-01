@@ -25,7 +25,7 @@
               <a href="#"> <strong><span class="brand-highlight"> SP </span>Games</strong></a>
           </div>
           <ul class="navbar-nav d-flex justify-content-between">
-              <li class="nav-item">
+              <li class="nav-item" id="nav-tabs">
                   <a href="/" class="HomeLink"><strong>Home</strong></a>
                   <a href="/explore" class="ExploreLink"><strong>Explore</strong></a>
                   <a href="/profile" class="LoginLink"><strong>Profile</strong></a>
@@ -36,7 +36,7 @@
 
   <div class="search-container">
     <input type="text" id="search-bar" placeholder="Search...">
-    <button id="search-button"><i class="fa fa-search"></i></button>
+    <button id="search-button" placeholder="Search"><i class="fa fa-search"></i></button>
   </div>
 
   <div class='row' id="search-results">
@@ -47,6 +47,12 @@
   
   <script>
     const baseURL = 'http://localhost:3000'
+
+    var userData = localStorage.getItem('userInfo');
+    var userJsonData = JSON.parse(userData);
+    if (userJsonData[0].type.toLowerCase() === 'admin') {
+      $('#nav-tabs').prepend('<a href="/admin" class="AdminLink"><strong>Admin</strong></a>')
+    }
 
     // Attach click event listener to the search button
     const searchButton = document.getElementById('search-button');

@@ -13,18 +13,24 @@ function verifyToken(req, res, next){
     if(!token){ //process the token
     
         return res.redirect('/login');
-    }else{
-
-       jwt.verify(token, config.key, function(err, decoded){ //verify token
-        if(err){
-            res.redirect('/403')
-        }else{
-            
-            req.decoded = decoded;
-            next();
-        }
-       });
     }
+
+    jwt.verify(token, config.key, function(err, decoded){ //verify token
+      
+    if(err){
+
+        res.redirect('/403')
+
+    } else{
+        
+        req.role = decoded.role;
+        req.id = decoded.id;
+        req.decoded = decoded;
+        
+        next();
+    }
+    });
+    
 }
 
 module.exports = verifyToken;

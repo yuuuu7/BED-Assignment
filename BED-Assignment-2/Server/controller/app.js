@@ -173,11 +173,11 @@ Game.insertNewGame(req.body, (err, results) => {
 });
 
 // Get game by platform ID
-app.get('/game/:platformid', (req,res) => {
+app.get('/game/byPlatformName', (req,res) => {
 
-  var platformid = req.params.platformid
+  var platform_name = req.query.platform_name
 
-  Game.getGameByPlatform(platformid, (err,results) => {
+  Game.getGameByPlatform(platform_name, (err,results) => {
 
       if(err) {
           res.status(500).send()
@@ -439,7 +439,7 @@ app.post('/user/login',function(req, res){
         res.setHeader('Authorization', token)
         delete result[0]['password'];//clear the password in json data, do not send back to client
         console.log(result);
-        res.json({success: true, UserData: JSON.stringify(result), token:token, status: 'You are successfully logged in!'}); 
+        res.json({success: true, UserData: result, token:token, status: 'You are successfully logged in!'}); 
         res.send();
   } else{
           res.status(500);
