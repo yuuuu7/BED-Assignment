@@ -68,6 +68,10 @@ body {
     background-color: wheat;
   }
 
+  #game-price {
+    color: white;
+  }
+
 
 /* Styling for the header container */
 .header {
