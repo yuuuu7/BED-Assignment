@@ -11,36 +11,74 @@ const Game = {
           return callback(err);
       } else {
           console.log("Connected!");
-  
+
+          only1GamePrice = false
+          only1GamePlatform = false
+          only1GameCategory = false
+
           // Validate price input
-          var prices = game.price.split(",");
-          for (var i = 0; i < prices.length; i++) {
-              if (isNaN(parseFloat(prices[i]))) {
-                  return callback("Invalid price format", null);
-              }
+          if (game.price.includes(",")) {
+            var prices = game.price.split(",");
+            for (var i = 0; i < prices.length; i++) {
+                if (isNaN(parseFloat(prices[i]))) {
+                    return callback("Invalid price format", null);
+                }
+            }
+          } else {
+            if (isNaN(parseFloat(game.price))) {
+              return callback("Invalid price format", null);
+            }
+            only1GamePrice = true
           }
   
           // Validate platformid input
-          var platformIds = game.platformid.split(",");
-          for (var i = 0; i < platformIds.length; i++) {
-              if (isNaN(parseInt(platformIds[i]))) {
-                  return callback("Invalid platformid format", null);
-              }
+          if (game.platformid.includes(",")) {
+
+            var platformIds = game.platformid.split(",");
+            for (var i = 0; i < platformIds.length; i++) {
+                if (isNaN(parseInt(platformIds[i]))) {
+                    return callback("Invalid platformid format", null);
+                }
+            }
+          } else {
+
+            if (isNaN(parseInt(game.platformid))) {
+              return callback("Invalid platformid format", null);
+            }
+
+            platformIds = game.platformid
+            only1GamePlatform = true
+
           }
-  
-          // Validate number of prices to number of platforms
-          if (prices.length !== platformIds.length) {
-              return callback("Prices and Platforms do not match", null);
+          
+          if(only1GamePrice !== true && only1GamePlatform !== true) {
+            
+            // Validate number of prices to number of platforms
+            if (prices.length !== platformIds.length) {
+                return callback("Prices and Platforms do not match", null);
+            }
           }
   
           // Validate categoryid input
-          var categoryIds = game.categoryid.split(",");
-          for (var i = 0; i < categoryIds.length; i++) {
-              if (isNaN(parseInt(categoryIds[i]))) {
-                  return callback("Invalid categoryid format", null);
-              }
+          if (game.categoryid.includes(",")) {
+
+            var categoryIds = game.categoryid.split(",");
+            for (var i = 0; i < categoryIds.length; i++) {
+                if (isNaN(parseInt(categoryIds[i]))) {
+                    return callback("Invalid categoryid format", null);
+                }
+            }
+
+          } else {
+
+            if (isNaN(parseInt(game.categoryid))) {
+              return callback("Invalid categoryid format", null);
+            }
+
+            categoryIds = game.categoryid
+            only1GameCategory = true
           }
-  
+          
           // Check if platformids exist in platform table
           var platformSql = 'SELECT COUNT(*) AS count FROM platform WHERE id IN (?)';
           conn.query(platformSql, [platformIds], function(err, platformResult) {
@@ -54,7 +92,7 @@ const Game = {
                   conn.end();
                   return callback("Invalid platformid(s)", null);
               }
-  
+              
               // Check if categoryids exist in category table
               var categorySql = 'SELECT COUNT(*) AS count FROM category WHERE id IN (?)';
               conn.query(categorySql, [categoryIds], function(err, categoryResult) {

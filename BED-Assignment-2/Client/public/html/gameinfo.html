@@ -26,7 +26,7 @@
               <a href="#"> <strong><span class="brand-highlight"> SP </span>Games</strong></a>
           </div>
           <ul class="navbar-nav d-flex justify-content-between">
-              <li class="nav-item">
+              <li class="nav-item" id="nav-tabs">
                   <a href="/" class="HomeLink"><strong>Home</strong></a>
                   <a href="/explore" class="ExploreLink"><strong>Explore</strong></a>
                   <a href="/profile" class="LoginLink"><strong>Profile</strong></a>
@@ -61,11 +61,15 @@
     var game_price = selected_game[0].price
     var game_platformid = selected_game[0].game_platformid
 
+    var userData = localStorage.getItem('userInfo');
+    var userJsonData = JSON.parse(userData);
     if (userJsonData[0].type.toLowerCase() === 'admin') {
       $('#nav-tabs').prepend('<a href="/admin" class="AdminLink"><strong>Admin</strong></a>')
     }
 
-    var game_price = game_price.split(",")
+    if (game_price.includes(",")) {
+        game_price = game_price.split(",")
+    }
 
     const platformButtonContainer = document.getElementById('platform-selection')
 

@@ -113,7 +113,7 @@ body {
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
     padding: 0.5rem 1rem;
-    color: #333;
+    color: white;
   }
 
   .nav-tabs .nav-link.active {
@@ -135,4 +135,31 @@ body {
   /* Display the active tab */
   .tab-pane.active {
     display: block;
+  }
+
+  .form-group {
+    color: white;
+  }
+
+  .notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    display: none;
+    z-index: 9999;
+    animation: fadeOut 8s ease;
+  }
+  
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
   }

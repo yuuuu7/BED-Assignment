@@ -112,6 +112,34 @@ app.post('/category', (req, res) => {
   });
 });
 
+app.get('/category', (req,res) => {
+
+  Category.retrieveAllCatNames((err,results) => {
+
+    if(err) {
+      res.status(500).send()
+      return
+    }
+
+    res.status(200).send(results)
+  })
+})
+
+app.get('/category/catId', (req,res) => {
+
+  var category_name = req.query.catname
+
+  Category.retrieveCatId(category_name, (err,results) => {
+
+    if(err) {
+      res.status(500).send()
+      return
+    }
+
+    res.status(200).send(results)
+  });
+})
+
 //============================================================== Platform API ===============================================================================
 
 // Insert a new platform
@@ -139,6 +167,17 @@ app.get('/platform', (req,res) => {
     res.status(200).send(results)
   })
 })
+
+app.get('/platform/platformId', (req,res) => {
+
+  Platform.retrievePlatformId(req.query.name, (err,results) => {
+    if (err) {
+      res.status(500).send()
+      return
+    }
+    res.status(200).send(results)
+  })
+});
 
 //============================================================== Game APIs ===============================================================================
 
@@ -448,11 +487,3 @@ app.post('/user/login',function(req, res){
   }); 
 }); 
 
-
-app.post('/user/logout', function(req,res){
-console.log("..logging out.");
-//res.clearCookie('session-id'); //clears the cookie in the response
-//res.setHeader('Content-Type', 'application/json');
-  res.json({success: true, status: 'Log out successful!'});
-
-});
