@@ -32,7 +32,7 @@ app.get("/403", (req,res) => {
   res.sendFile("/public/html/403.html", { root: __dirname })
 })
 
-app.get("/gameinfo", (req,res) => {
+app.get("/gameinfo", verifyToken, (req,res) => {
   res.sendFile("/public/html/gameinfo.html", { root: __dirname })
 })
 

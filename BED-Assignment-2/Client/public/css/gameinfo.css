@@ -1,164 +1,335 @@
+/* Global styles */
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-image: url("../grey-wallpaper.jpeg"); /* Replace with your image path */
-    background-size: cover; /* Adjust to "contain" if you want the image to fit entirely within the background */
-    background-repeat: no-repeat; /* Prevent the image from repeating if smaller than the screen */
-    background-attachment: fixed;
-    width: 100%;
-  }
-  
-  .game-details-container {
-    width: 80%;
-    max-width: 1000px;
-    margin: 200px auto;
-    display: flex;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .game-image-container {
-    flex: 1;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-  }
-  
-  #game-image {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  .game-info-container {
-    flex: 2;
-    padding: 20px;
-  }
-  
-  #game-title {
-    font-size: 24px;
-    color: white;
-    margin: 0;
-  }
-  
-  #game-description {
-    font-size: 16px;
-    color: white;
-  }
-  
-  .platform-buttons {
-    margin-top: 20px;
-  }
-  
-  .platform-button {
-    padding: 8px 16px;
-    margin-right: 10px;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    background-color: transparent;
-    outline: 1px solid #fff;
-  }
-  
-  .platform-button:hover {
-    background-color: wheat;
-  }
-  
-  .platform-button.selected {
-    background-color: wheat;
-  }
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-image: url("../grey-wallpaper.jpeg"); /* Replace with your image path */
+  background-size: cover; /* Adjust to "contain" if you want the image to fit entirely within the background */
+  background-repeat: no-repeat; /* Prevent the image from repeating if smaller than the screen */
+  background-attachment: fixed;
+  width: 100%;
+}
 
-  #game-price {
-    color: white;
-  }
-
-
-/* Styling for the header container */
+/* Header styles */
 .header {
-    color: #fff;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 999; /* Ensure the navbar stays above other elements */
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999; /* Ensure the navbar stays above other elements */
+}
+
+/* Navbar styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-left: 7px;
+  margin-top: 10px;
+}
+
+.navbar-brand a {
+  color: #fff; /* Set the default color of the brand text */
+  font-size: 30px;
+  text-decoration: none;
+  padding-left: 10px;
+}
+
+/* Optional: Remove the underline from the entire brand on hover */
+.navbar-brand a:hover {
+  text-decoration: none;
+  color: grey;
+}
+
+.brand-highlight {
+  color: red; /* Set the highlight color to red */
+}
+
+/* Navbar links styles */
+.navbar-nav {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+}
+
+.navbar-nav li a {
+  text-decoration: none;
+  padding: 10px; /* Adjust this value to add padding around the words */
+  font-size: 20px;
+}
+
+.nav-item {
+  margin-right: 20px;
+}
+
+.nav-item a {
+  color: #fff; /* Set the default color of the links */
+  font-size: 18px;
+  text-decoration: none;
+  position: relative; /* Required for pseudo-element */
+  transition: color 0.3s; /* Smooth color transition */
+}
+
+/* Pseudo-element to create the highlight effect */
+.nav-item a::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px; /* Set the height of the highlight */
+  background-color: #fff; /* Set the color of the highlight */
+  transform: scaleX(0); /* Initial scaling to make it invisible */
+  transform-origin: left;
+  transition: transform 0.3s; /* Smooth transform transition */
+}
+
+/* Highlight effect on hover */
+.nav-item a:hover::before {
+  transform: scaleX(1); /* Scale the highlight to full width on hover */
+}
+
+.nav-item a:hover {
+  color: grey; /* Set the color to grey when hovered over */
+}
+
+/* Game details container styles */
+.game-details-container {
+  width: 80%;
+  max-width: 1000px;
+  margin: 200px auto;
+  display: flex;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Game image container styles */
+.game-image-container {
+  flex: 2; /* Occupy 1/3 of the container */
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the image horizontally */
+  max-width: 500px; /* Set a maximum height for the image container */
+}
+
+#game-image {
+  width: 100%; /* The image will fill the container */
+  height: auto;
+  border-radius: 10px;
+}
+
+/* Game info container styles */
+.game-info-container {
+  flex: 1; /* Occupy 2/3 of the container */
+  padding: 20px;
+}
+
+#game-title {
+  font-size: 24px;
+  color: white;
+  margin: 0;
+}
+
+#game-description {
+  font-size: 16px;
+  color: white;
+  margin-top: 20px;
+}
+
+/* Platform buttons styles */
+.platform-buttons {
+  margin-top: 20px;
+}
+
+.platform-button {
+  padding: 8px 16px;
+  margin-right: 10px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  background-color: transparent;
+  outline: 1px solid #fff;
+}
+
+.platform-button:hover {
+  background-color: wheat;
+}
+
+.platform-button.selected {
+  background-color: wheat;
+}
+
+/* Game price styles */
+#game-price {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 20px;
+  color: white;
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 600px) {
+  .game-details-container {
+    flex-direction: column; /* Display game details below the image on smaller screens */
+    align-items: center; /* Center the game details horizontally */
   }
 
-  /* Styling for the navbar */
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    margin-left: 7px;
-    margin-top: 10px;
-  }
-  
-  /* Nav Brand Styling */
-  .navbar-brand a {
-    color: #fff; /* Set the default color of the brand text */
-    font-size: 30px;
-    text-decoration: none;
-    padding-left: 10px;
-  }
-  
-  
-  /* Optional: Remove the underline from the entire brand on hover */
-  .navbar-brand a:hover{
-    text-decoration: none;
-    color: grey;
-    
+  .game-image-container {
+    max-width: 100%; /* Allow the image to take the full width on smaller screens */
   }
 
-  .brand-highlight {
-    color: red; /* Set the highlight color to red */
+  .game-info-container {
+    margin-top: 20px; /* Add some spacing between the image and the game details */
   }
-  
-  
-  /* Style the navbar links */
-  .navbar-nav {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 10px;
-  }
+}
 
-  .navbar-nav li a {
-    text-decoration: none;
-    padding: 10px; /* Adjust this value to add padding around the words */
-    font-size: 20px;
-  }
 
-  .nav-item {
-    margin-right: 20px;
-  }
-  
-  .nav-item a {
-    color: #fff; /* Set the default color of the links */
-    font-size: 18px;
-    text-decoration: none;
-    position: relative; /* Required for pseudo-element */
-    transition: color 0.3s; /* Smooth color transition */
-  }
-  
-  /* Pseudo-element to create the highlight effect */
-  .nav-item a::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px; /* Set the height of the highlight */
-    background-color: #fff; /* Set the color of the highlight */
-    transform: scaleX(0); /* Initial scaling to make it invisible */
-    transform-origin: left;
-    transition: transform 0.3s; /* Smooth transform transition */
-  }
-  
-  /* Highlight effect on hover */
-  .nav-item a:hover::before {
-    transform: scaleX(1); /* Scale the highlight to full width on hover */
-  }
-  
-  .nav-item a:hover {
-    color: grey; /* Set the color to grey when hovered over */
-  }
+/* Review stats container styles */
+#game-review-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: white;
+  margin-left: 24%;
+}
+
+/* Game review count styles */
+#game-review-count {
+  font-size: 18px;
+  color: white;
+}
+
+/* Game reviews container styles */
+.game-reviews-container {
+  margin-top: 40px;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+}
+
+/* Review card container styles */
+.review-card-container {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin: 10px;
+  max-width: 200px;
+  height: 200px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Review content styles */
+.review-content {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* Review date styles */
+.review-date {
+  font-size: 14px;
+  color: #777;
+}
+
+/* Clearfix for floats */
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Reviews pagination buttons styles */
+.reviews-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.reviews-pagination button {
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  margin: 0 10px;
+}
+
+.reviews-pagination button:hover {
+  background-color: translucent;
+}
+
+.reviews-pagination button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Review form container styles */
+.review-form-container {
+  margin-top: 40px;
+  max-width: 1000px;
+  margin: 200px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.review-form-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.review-form-container form {
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.review-form-container .form-group {
+  margin-bottom: 20px;
+}
+
+.review-form-container label {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.review-form-container textarea {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+}
+
+.review-form-container select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.review-form-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.review-form-container button:hover {
+  background-color: translucent;
+}

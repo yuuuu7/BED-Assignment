@@ -2,7 +2,7 @@ const { call } = require('function-bind');
 var db=require('../db/databaseConfig');
 
 const Game = {
-  insertNewGame: function(game, callback) {
+  insertNewGame: function(game, imageName, callback) {
     var conn = db.getConnection();
 
     conn.connect(function(err) {
@@ -116,8 +116,8 @@ const Game = {
                       }
   
                       // All validations passed, insert the game
-                      var insertSql = 'INSERT INTO game (title, description, price, platformid, categoryid, year) VALUES (?,?,?,?,?,?)';
-                      conn.query(insertSql, [game.title, game.description, game.price, game.platformid, game.categoryid, game.year], function(err, results) {
+                      var insertSql = 'INSERT INTO game (title, description, price, platformid, categoryid, year, image_name) VALUES (?,?,?,?,?,?,?)';
+                      conn.query(insertSql, [game.title, game.description, game.price, game.platformid, game.categoryid, game.year, imageName], function(err, results) {
                           conn.end();
   
                           if (err) {

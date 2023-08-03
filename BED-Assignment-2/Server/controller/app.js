@@ -144,12 +144,15 @@ app.get('/category/catId', (req,res) => {
 
 // Insert a new platform
 app.post('/platform', (req, res) => {
+  console.log(req.body)
   Platform.insertNewPlatform(req.body, (err, results) => {
     if (err) {
       if (err === "Platform already exists") {
         res.status(422).send("Platform already exists");
+        return
       } else {
         res.status(500).send("Internal Server Error");
+        return
       }
       return;
     }
@@ -161,7 +164,9 @@ app.post('/platform', (req, res) => {
 app.get('/platform', (req,res) => {
   Platform.getAllPlatformNames((err,results) => {
     if(err) {
+      console.log(err)
       res.status(500).send()
+      return
     }
 
     res.status(200).send(results)
@@ -182,34 +187,34 @@ app.get('/platform/platformId', (req,res) => {
 //============================================================== Game APIs ===============================================================================
 
 // Insert a new game
-app.post('/game', (req, res) => {
-Game.insertNewGame(req.body, (err, results) => {
-    if (err) {
-        if (err === 'Invalid price format') {
-          res.status(400).send("Invalid price format");
+// app.post('/game', (req, res) => {
+// Game.insertNewGame(req.body, (err, results) => {
+//     if (err) {
+//         if (err === 'Invalid price format') {
+//           res.status(400).send("Invalid price format");
 
-        } else if (err === "Invalid platformid format" || err === "Invalid categoryid format") {
-            res.status(400).send("Invalid format for platformid or categoryid");
+//         } else if (err === "Invalid platformid format" || err === "Invalid categoryid format") {
+//             res.status(400).send("Invalid format for platformid or categoryid");
 
-        } else if (err === "Invalid platformid(s)" || err === "Invalid categoryid(s)") {
-            res.status(404).send("One or more platformid(s) or categoryid(s) do not exist");
+//         } else if (err === "Invalid platformid(s)" || err === "Invalid categoryid(s)") {
+//             res.status(404).send("One or more platformid(s) or categoryid(s) do not exist");
 
-        } else if (err === "Prices and Platforms do not match") {
-          res.status(400).send("Total number of Prices in relation to Platforms do not match");
+//         } else if (err === "Prices and Platforms do not match") {
+//           res.status(400).send("Total number of Prices in relation to Platforms do not match");
 
-        } else if (err === "Game already exists") {
-          res.status(400).send("Game already exists");
+//         } else if (err === "Game already exists") {
+//           res.status(400).send("Game already exists");
 
-        } else {
-            console.log(err)
-            res.status(500).send("Internal Server Error");
-        }
-        return;
-    }
+//         } else {
+//             console.log(err)
+//             res.status(500).send("Internal Server Error");
+//         }
+//         return;
+//     }
 
-    res.status(201).send({"gameid": results});
-});
-});
+//     res.status(201).send({"gameid": results});
+// });
+// });
 
 // Get game by platform ID
 app.get('/game/byPlatformName', (req,res) => {
@@ -348,9 +353,6 @@ app.get('/game/:id/review', (req,res) => {
           return
       }
 
-      if(results.length === 0) {
-          res.status(404).send()
-      }
 
       res.status(200).send(results)
   })
@@ -367,7 +369,7 @@ var db=require('../db/databaseConfig');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'controller/images/'); // Specify the destination folder where the uploaded files will be stored
+      cb(null, '../Client/public'); // Specify the destination folder where the uploaded files will be stored
     },
     filename: function (req, file, cb) {
       cb(null, file.originalname); // Specify the filename for the uploaded file
@@ -385,28 +387,49 @@ const fileFilter = function (req, file, cb) {
   
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 1024 * 1024 }, // Set 1MB limit
     fileFilter: fileFilter
   });
 
-app.post('/upload/game/:id/image', upload.single('image'), function (req, res) {
-  var gameid = req.params.id
-  // Access the uploaded file name
-  const imageName = req.file.originalname;
 
-  Game.addImageName(imageName, gameid, (err,results) => {
-    if(err) {
-      res.status(500).send()
-      return
-    }
+app.post('/game', upload.single('image'), (req, res) => {
+
+  if(req.file !== undefined) {
+    var imageName = req.file.filename;
+  } else {
+    var imageName = null;
+  }
+
+  Game.insertNewGame(req.body, imageName, (err, results) => {
+      if (err) {
+          if (err === 'Invalid price format') {
+            res.status(400).send("Invalid price format");
   
-    res.status(201).send(`Successfully uploaded ${imageName}`)
-  })
-});
+          } else if (err === "Invalid platformid format" || err === "Invalid categoryid format") {
+              res.status(400).send("Invalid format for platformid or categoryid");
+  
+          } else if (err === "Invalid platformid(s)" || err === "Invalid categoryid(s)") {
+              res.status(404).send("One or more platformid(s) or categoryid(s) do not exist");
+  
+          } else if (err === "Prices and Platforms do not match") {
+            res.status(400).send("Total number of Prices in relation to Platforms do not match");
+  
+          } else if (err === "Game already exists") {
+            res.status(400).send("Game already exists");
+  
+          } else {
+              console.log(err)
+              res.status(500).send("Internal Server Error");
+          }
+          return;
+      }
+  
+      res.status(201).send({"gameid": results});
+  });
+  });
   
 app.get("/upload/game/:id/image", function (req, res) {
   var gameid = req.params.id
-  res.sendFile(path.join(__dirname, "upload.html"));
+  res.sendFile(path.join(__dirname, "..", "public", 'upload.html'));
 });
 
 app.get('/game/:id/image', (req,res) => {
