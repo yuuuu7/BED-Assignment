@@ -44,6 +44,9 @@
       <li class="nav-item">
         <a href="#newPlatformtab" data-toggle="tab" class="nav-link">Add New Platform</a>
       </li>
+      <li class="nav-item">
+        <a href="#editGametab" data-toggle="tab" class="nav-link">Edit Game</a>
+      </li>
     </ul>
     <div class="tab-content mt-3">
       <!-- Tab 1: New Game -->
@@ -118,6 +121,65 @@
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
       </div>
+
+      <!-- Tab 3: Edit Game -->
+      <div class="tab-pane" id="editGametab">
+        <h3>Edit Game</h3>
+        <!-- Edit Game Form -->
+        <form enctype="multipart/form-data" id="editGameForm" method="post">
+
+          <div class="form-group">
+            <label for="select-game">Select Game</label>
+            <select class="form-control" id="game-selection">
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="editTitle">Title</label>
+            <input type="text" class="form-control" id="editTitle" name="editTitle" placeholder="Game Title" required>
+          </div>
+
+          <div class="form-group">
+            <label>Edit Platform</label>
+            <div class="row" id="edit-platform-selection">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editPrice">Price</label>
+            <input type="text" class="form-control" id="editPrice" name="editPrice" step="0.01" pattern="^[0-9,.]+$" title="Please enter only numbers and commas" placeholder="Enter in sequence of selected platforms (horizontal)" required>
+          </div>
+
+          <div class="form-group">
+            <label>Edit Category</label>
+            <div class="row" id="edit-category-selection">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editYearPublished">Year Published</label>
+            <input type="number" class="form-control" id="editYearPublished" name="editYearPublished" placeholder="e.g. 2018" required>
+          </div>
+
+          <div class="form-group">
+            <label for="editImage">Image</label>
+            <input type="file" class="form-control-file" id="editImage" name="editGameImage">
+          </div>
+
+          <div class="form-group">
+            <label for="editDescription">Description</label>
+            <textarea class="form-control" id="editDescription" name="editDescription" required></textarea>
+          </div>
+
+          <div class="notification" id="editSuccessNotification">
+            Game edited successfully!
+          </div>
+
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+
+        </form>
+      </div>
+
     </div>
   </div>
 
@@ -140,13 +202,22 @@
         </div>
         `
       )
+
+      $('#edit-platform-selection').append(
+        `
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="${platformNames[i].platform_name}" name="edit-platform" value="${platformNames[i].platform_name}">
+          <label class="form-check-label" for="platform${platformNames[i].platform_name}">${platformNames[i].platform_name}</label>
+        </div>
+        `
+      )
     }
   })
 
   axios.get(`${baseURL}/category`)
   .then((response) => {
     const categoryNames = response.data
-    
+
     for (let i = 0; i < categoryNames.length; i++) {
       $('#category-selection').append(
         `
@@ -156,6 +227,30 @@
         </div>
 
       `
+      )
+
+      $('#edit-category-selection').append(
+        `
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="${categoryNames[i].catname}" name="edit-category" value="${categoryNames[i].catname}">
+          <label class="form-check-label" for="category${categoryNames[i].catname}">${categoryNames[i].catname}</label>
+        </div>
+
+      `
+      )
+
+    }
+  })
+
+  axios.get(`${baseURL}/game/allGameNames`)
+  .then((response) => {
+    const gameNames = response.data
+
+    for (let i = 0; i < gameNames.length; i++) {
+      $('#game-selection').append(
+        `
+        <option value="${gameNames[i].title}">${gameNames[i].title}</option>
+        `
       )
     }
   })
@@ -275,6 +370,190 @@
     });
   });
 
+  // // Not Fully Functional
+  // $('#game-selection').change((event) => {
+  //   var gameName = event.target.value;
+  //   axios.get(`${baseURL}/game/selectByName`, {
+  //     params: {
+  //       option: gameName
+  //     }
+  //   })
+  //   .then((response) => {
+  //     const gameData = response.data[0];
+
+  //     const gameId = gameData.id;
+  //     $('#editTitle').val(gameData.title);
+  //     $('#editPrice').val(gameData.price);
+  //     $('#editYearPublished').val(gameData.year);
+  //     $('#editDescription').val(gameData.description);
+
+  //     // Retrieve the associated platform IDs from the gameData
+  //     let associatedPlatforms = [];
+  //     if (gameData.platformid) {
+  //       if (gameData.platformid.includes(',')) {
+  //         associatedPlatforms = gameData.platformid.split(',');
+  //       } else {
+  //         associatedPlatforms = [gameData.platformid];
+  //       }
+  //     }
+
+  //     let associatedCategories = [];
+  //     if (gameData.categoryid) {
+  //       if (gameData.categoryid.includes(',')) {
+  //         associatedCategories = gameData.categoryid.split(',');
+  //       } else {
+  //         associatedCategories = [gameData.categoryid];
+  //       }
+  //     }
+
+
+  //     axios.get(`${baseURL}/platform`)
+  //     .then((response) => {
+  //       const temp = response.data;
+  //       for (let i = 0; i < temp.length; i++) {
+  //         if (associatedPlatforms.includes(temp[i].id.toString())) {
+  //           $(`#${temp[i].platform_name}`).prop('checked', true);
+  //         } else {
+  //           $(`#${temp[i].platform_name}`).prop('checked', false);
+  //         }
+  //       }
+  //     })
+
+  //     axios.get(`${baseURL}/category`)
+  //     .then((response) => {
+  //       const temp_2 = response.data;
+  //       for (let i = 0; i < temp_2.length; i++) {
+  //         if (gameData.categoryid.includes(temp_2[i].id.toString())) {
+  //           $(`#${temp_2[i].catname}`).prop('checked', true);
+  //         } else {
+  //           $(`#${temp_2[i].catname}`).prop('checked', false);
+  //         }
+  //       }
+  //     })
+      
+
+
+  //       })
+  //     })
+
+  //     // Not Fully Functional
+  //     $('#editGameForm').submit((event) => {
+  //       event.preventDefault();
+
+  //       const title = $('#editTitle').val();
+  //       const description = $('#editDescription').val();
+  //       const price = $('#editPrice').val();
+  //       const yearPublished = $('#editYearPublished').val();
+
+  //       let platform = "";
+  //       $('input[name="edit-platform"]:checked').each(function () {
+  //         platform += $(this).val() + ",";
+  //       });
+
+  //       // Remove the trailing comma from the platform string
+  //       platform = platform.slice(0, -1);
+
+  //       axios.get(`${baseURL}/platform/platformId`, {
+  //             params: {
+  //               name: platform
+  //             }
+  //         })
+  //         .then((response) => {
+  //           const platformData = response.data;
+
+  //           var platformIdString = ''
+  //           for (let i = 0; i < platformData.length; i++) {
+  //             platformIdString += platformData[i].id + ','
+  //           }
+
+  //           platformIdString = platformIdString.slice(0, -1);
+
+  //           // console.log('Platform: ' + platformIdString)
+
+  //           let category = "";
+  //           $('input[name="edit-category"]:checked').each(function () {
+  //             category += $(this).val() + ",";
+  //           });
+
+  //           // Remove the trailing comma from the category string
+  //           category = category.slice(0, -1);
+
+  //           console.log(category)
+
+  //           axios.get(`${baseURL}/category/catId`, {
+  //             params: {
+  //               catname: category,
+  //             },
+  //           })
+  //           .then((response) => {
+
+  //             const categoryData = response.data;
+
+  //             console.log(categoryData)
+
+  //             var categoryIdString = '';
+
+  //             for (let i = 0; i < categoryData.length; i++) {
+  //               categoryIdString += categoryData[i].id + ',';
+  //             }
+
+  //             categoryIdString = categoryIdString.slice(0, -1);
+  //             // console.log('Categories: ' + categoryIdString);
+
+  //               const game = {
+  //                 title: title,
+  //                 description: description,
+  //                 price: price,
+  //                 categoryid: categoryIdString,
+  //                 year: yearPublished,
+  //                 platformid: platformIdString,
+  //               };
+
+
+  //               const imageInput = document.getElementById('image');
+  //               const imageFile = imageInput.files[0];
+
+  //               const formData = new FormData();
+  //               if(imageFile !== undefined) {
+  //                 formData.append('image', imageFile);
+  //               }
+
+
+  //               // Append the game object to the formData
+  //               for (const key in game) {
+  //                 formData.append(key, game[key]);
+  //               }
+
+
+  //               axios.put(`${baseURL}/game/${gameId}`, formData)
+  //                 .then((response) => {
+  //                   console.log(response);
+
+  //                   // Show the green notification
+  //                   const successNotification = document.getElementById('editsuccessNotification');
+  //                   successNotification.style.display = 'block';
+
+  //                   // Hide the notification after 3 seconds (adjust the duration as needed)
+  //                   setTimeout(() => {
+  //                     successNotification.style.display = 'none';
+  //                   }, 8000);
+
+  //                   $('form')[0].reset();
+  //                 })
+  //                 .catch((error) => {
+  //                   console.log(error);
+  //                 });
+
+  //         })
+  //         .catch((error) => {
+  //           console.log(error);
+  //         });
+
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //       });
+  //     });
   $('#newPlatform').submit((event) => {
 
   event.preventDefault();

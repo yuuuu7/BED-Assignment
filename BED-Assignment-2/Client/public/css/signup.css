@@ -1,6 +1,9 @@
 /* signup.css */
 @charset "utf-8";
 
+body {
+    background-image: url("../images/steam.jpg");
+}
 /* Override the previous text-center class to set the color for the "Sign Up" heading */
 .text-center {
     color: green;

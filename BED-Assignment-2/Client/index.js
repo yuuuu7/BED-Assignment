@@ -4,6 +4,7 @@ var serveStatic = require('serve-static');
 const verifyToken = require('./auth/verifyToken')
 const cookieParser = require('cookie-parser')
 const verifyAdmin = require('./auth/verifyAdmin')
+const isLoggedin = require('./auth/isLoggedin')
 app.use(cookieParser())
 
 
@@ -15,8 +16,8 @@ app.get("/profile", verifyToken, (req, res) => {
   res.sendFile("/public/html/profile.html", { root: __dirname });
 });
 
-// Use the middleware to protect the login route as well (optional, but good practice)
-app.get("/login", (req, res) => {
+
+app.get("/login", isLoggedin, (req, res) => {
   res.sendFile("/public/html/login.html", { root: __dirname });
 });
 
@@ -42,6 +43,7 @@ app.get("/admin", verifyToken, verifyAdmin, (req,res) => {
 
 // Serving static files (public directory) - No need for authentication
 app.use(serveStatic(__dirname + '/public'));
+app.use(serveStatic(__dirname + '/public/images'));
 
 const PORT = 3001;
 

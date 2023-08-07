@@ -25,74 +25,7 @@ app.use(serveStatic(__dirname + '/public'));
 app.use(cookieParser())
 
 
-//============================================================== User APIs ===============================================================================
 
-// Get all users
-app.get('/users/', (req,res) => {
-  User.getAllUsers((err,results) => {
-      if(err) {
-          res.status(500).send()
-          return
-      }
-
-      if(results.length === 0) {
-          res.status(404).send()
-      }
-
-      res.status(200).send(results)
-  })
-})
-
-// Add a new user
-app.post('/users/', (req,res) => {
-  User.addNewUser(req.body, (err,results) => {
-      if (err) {
-          if (err === "Email already exists") {
-            res.status(422).send("Email already exists");
-          } else {
-            res.status(500).send("Internal Server Error");
-          }
-          return;
-        }
-
-      res.status(201).send({"userID": results})
-  })
-})
-
-// Get user by ID
-app.get('/users/:userid', (req,res) => {
-
-  var userid = req.params.userid
-
-  User.findUserByID(userid, (err,results) => {
-      if (results.length === 0) {
-          return res.status(404).send('Data not found');
-        }
-
-      if(err) {
-          res.status(500).send()
-          return
-      }
-
-      res.status(200).send(results)
-  })
-})
-
-app.put('/users/:userid', (req,res) => {
-
-  var userid = req.params.userid
-
-  User.updateUser(req.body, userid, (err,results) => {
-    if (err) {
-      if (err === "Email already exists") {
-        res.status(422).send("Email already exists");
-      } else {
-        res.status(500).send("Internal Server Error");
-      }
-      return;
-    }
-  })
-});
 
 //============================================================== Category API ===============================================================================
 
@@ -187,189 +120,13 @@ app.get('/platform/platformId', (req,res) => {
 //============================================================== Game APIs ===============================================================================
 
 // Insert a new game
-// app.post('/game', (req, res) => {
-// Game.insertNewGame(req.body, (err, results) => {
-//     if (err) {
-//         if (err === 'Invalid price format') {
-//           res.status(400).send("Invalid price format");
-
-//         } else if (err === "Invalid platformid format" || err === "Invalid categoryid format") {
-//             res.status(400).send("Invalid format for platformid or categoryid");
-
-//         } else if (err === "Invalid platformid(s)" || err === "Invalid categoryid(s)") {
-//             res.status(404).send("One or more platformid(s) or categoryid(s) do not exist");
-
-//         } else if (err === "Prices and Platforms do not match") {
-//           res.status(400).send("Total number of Prices in relation to Platforms do not match");
-
-//         } else if (err === "Game already exists") {
-//           res.status(400).send("Game already exists");
-
-//         } else {
-//             console.log(err)
-//             res.status(500).send("Internal Server Error");
-//         }
-//         return;
-//     }
-
-//     res.status(201).send({"gameid": results});
-// });
-// });
-
-// Get game by platform ID
-app.get('/game/byPlatformName', (req,res) => {
-
-  var platform_name = req.query.platform_name
-
-  Game.getGameByPlatform(platform_name, (err,results) => {
-
-      if(err) {
-          res.status(500).send()
-          return
-      }
-
-      if(results.length === 0) {
-          res.status(404).send()
-          return
-      }
-
-      res.status(200).send(results)
-  })
-})
-
-// Delete game by ID
-app.delete('/game/:gameid', (req,res) => {
-
-  var gameid = req.params.gameid
-  Game.deleteGameByID(gameid, (err,results) => {
-      if(err) {
-          res.status(500).send()
-          return
-      }
-
-      res.status(204).send()
-  })
-})
-
-// Update game by ID
-app.put('/game/:gameid', (req,res) => {
-
-  var gameid = req.params.gameid
-  Game.updateGameByID(req.body, gameid, (err,results) => {
-    if (err) {
-      if (err === 'Invalid price format') {
-        res.status(400).send("Invalid price format");
-
-      } else if (err === "Invalid platformid format" || err === "Invalid categoryid format") {
-          res.status(400).send("Invalid format for platformid or categoryid");
-
-      } else if (err === "Invalid platformid(s)" || err === "Invalid categoryid(s)") {
-          res.status(404).send("One or more platformid(s) or categoryid(s) do not exist");
-
-      } else if (err === "Prices and Platforms do not match") {
-          res.status(400).send("Total number of Prices in relation to Platforms do not match");
-      } else {
-          console.log(err)
-          res.status(500).send("Internal Server Error");
-      }
-      return;
-  }
-
-      res.status(204).send()
-  })
-})
-
-app.get('/game', (req,res) => {
-  
-  Game.gameSearch(req.query.search, (err,results) => {
-    if(err) {
-      console.log(err)
-      res.status(500).send()
-      return
-    }
-
-    res.status(200).send(results)
-  })
-});
-
-app.get('/getGameByID/game/:id', (req,res) => {
-
-  const gameid = req.params.id
-  
-  Game.getGameByID(gameid, (err,results) => {
-    if(err) {
-      console.log(err)
-      res.status(500).send()
-      return
-    }
-
-    res.status(200).send(results)
-  });
-})
-
-app.get('/game/allplatforms/lol', (req,res) => {
-
-  Game.getAllGamesPlatform(req.query.search, (err,results) => {
-    if(err) {
-      console.log(err)
-      res.status(500).send()
-      return
-    }
-
-    res.status(200).send(results)
-  })
-});
-
-//============================================================== Review APIs ===============================================================================
-
-// Add a new review for a game
-app.post('/user/:uid/game/:gid/review/', (req, res) => {
-var userid = req.params.uid;
-var gameid = req.params.gid;
-
-Review.insertNewReview(userid, gameid, req.body, (err, results) => {
-  if (err) {
-    if (err === "Rating should be a valid integer.") {
-      res.status(400).send("Rating should be a valid integer");
-    } else if(err === "User has already left a review for this game") {
-      res.status(400).send("User has already left a review for this game");
-    } else {
-      res.status(500).send();
-    }
-    return;
-  }
-
-  res.status(201).send({ "reviewid": results });
-});
-});
-
-// Get reviews for a game by game ID
-app.get('/game/:id/review', (req,res) => {
-  var gameid = req.params.id
-
-  Review.getReviewByGameID(gameid, (err,results) => {
-      if(err){
-          res.status(500).send()
-          return
-      }
-
-
-      res.status(200).send(results)
-  })
-})
-
-  
-module.exports = app;
-
-
-//============================================================== Bonus Feature APIs ===============================================================================
 const multer = require('multer')
 const path = require('path')
 var db=require('../db/databaseConfig');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, '../Client/public'); // Specify the destination folder where the uploaded files will be stored
+      cb(null, '../Client/public/images'); // Specify the destination folder where the uploaded files will be stored
     },
     filename: function (req, file, cb) {
       cb(null, file.originalname); // Specify the filename for the uploaded file
@@ -426,54 +183,117 @@ app.post('/game', upload.single('image'), (req, res) => {
       res.status(201).send({"gameid": results});
   });
   });
-  
-app.get("/upload/game/:id/image", function (req, res) {
-  var gameid = req.params.id
-  res.sendFile(path.join(__dirname, "..", "public", 'upload.html'));
-});
 
-app.get('/game/:id/image', (req,res) => {
-  var gameid = req.params.id
 
-  Game.retrieveImage(gameid, (err,results) => {
-    if(err) {
-      res.status(500).send()
-      return
-    }
+// Get game by platform ID
+app.get('/game/byPlatformName', (req,res) => {
 
-    if(results.length === 0) {
-      res.status(404).send(`The picture for game with ID ${gameid} does not exist!`)
-      return
-    }
+  var platform_name = req.query.platform_name
 
-    const imageName = results[0].image_name;
-    const absoluteImagePath = path.join(__dirname, 'Images', imageName);
+  Game.getGameByPlatform(platform_name, (err,results) => {
 
-    res.sendFile(absoluteImagePath);
+      if(err) {
+          res.status(500).send()
+          return
+      }
+
+      if(results.length === 0) {
+          res.status(404).send()
+          return
+      }
+
+      res.status(200).send(results)
   })
 })
 
-app.post('/game/:id/image', (req,res) => {
-  var gameid = req.params.id
-  Game.addImageName(req.body, gameid, (err,results) => {
-    if(err) {
-      res.status(500).send()
-      return
-    }
-  
-    res.status(201).send()
+// Delete game by ID
+app.delete('/game/:gameid', (req,res) => {
+
+  var gameid = req.params.gameid
+  Game.deleteGameByID(gameid, (err,results) => {
+      if(err) {
+          res.status(500).send()
+          return
+      }
+
+      res.status(204).send()
   })
 })
 
-app.get('/game', (req,res) => {
-  Game.getAllGames((err,results) => {
+// Update game by ID
+app.put('/game/:gameid', upload.single('image'), (req,res) => {
+
+  if(req.file !== undefined) {
+    var imageName = req.file.filename;
+  } else {
+    var imageName = null;
+  }
+
+  var gameid = req.params.gameid
+  Game.updateGameByID(req.body, gameid, imageName, (err,results) => {
+    if (err) {
+      if (err === 'Invalid price format') {
+        res.status(400).send("Invalid price format");
+
+      } else if (err === "Invalid platformid format" || err === "Invalid categoryid format") {
+          res.status(400).send("Invalid format for platformid or categoryid");
+
+      } else if (err === "Invalid platformid(s)" || err === "Invalid categoryid(s)") {
+          res.status(404).send("One or more platformid(s) or categoryid(s) do not exist");
+
+      } else if (err === "Prices and Platforms do not match") {
+          res.status(400).send("Total number of Prices in relation to Platforms do not match");
+      } else {
+          console.log(err)
+          res.status(500).send("Internal Server Error");
+      }
+      return;
+  }
+
+      res.status(204).send('Successfully updated game')
+  })
+})
+
+app.get('/game/allGameNames', (req,res) => {
+  
+  Game.getAllGameNames((err,results) => {
     if(err) {
+      console.log(err)
       res.status(500).send()
+      return
     }
 
     res.status(200).send(results)
   })
+});
+
+app.get('/getGameByID/game/:id', (req,res) => {
+
+  const gameid = req.params.id
+  
+  Game.getGameByID(gameid, (err,results) => {
+    if(err) {
+      console.log(err)
+      res.status(500).send()
+      return
+    }
+
+    res.status(200).send(results)
+  });
 })
+
+app.get('/game/allplatforms/', (req,res) => {
+
+  Game.getAllGamesPlatform(req.query.search, (err,results) => {
+    if(err) {
+      console.log(err)
+      res.status(500).send()
+      return
+    }
+
+    res.status(200).send(results)
+  })
+});
 
 app.get('/game/id/:id', (req,res) => {
 
@@ -487,6 +307,60 @@ app.get('/game/id/:id', (req,res) => {
     res.status(200).send(results)
   })
 })
+
+app.get('/game/selectByName/', (req,res) => {
+  
+    Game.gameSelectByName(req.query.option, (err,results) => {
+      if(err) {
+        console.log(err)
+        res.status(500).send()
+        return
+      }
+  
+      res.status(200).send(results)
+    })
+})
+
+//============================================================== Review APIs ===============================================================================
+
+// Add a new review for a game
+app.post('/user/:uid/game/:gid/review/', (req, res) => {
+var userid = req.params.uid;
+var gameid = req.params.gid;
+
+Review.insertNewReview(userid, gameid, req.body, (err, results) => {
+  if (err) {
+    if (err === "Rating should be a valid integer.") {
+      res.status(400).send("Rating should be a valid integer");
+    } else if(err === "User has already left a review for this game") {
+      res.status(400).send("User has already left a review for this game");
+    } else {
+      res.status(500).send();
+    }
+    return;
+  }
+
+  res.status(201).send({ "reviewid": results });
+});
+});
+
+// Get reviews for a game by game ID
+app.get('/game/:id/review', (req,res) => {
+  var gameid = req.params.id
+
+  Review.getReviewByGameID(gameid, (err,results) => {
+      if(err){
+          res.status(500).send()
+          return
+      }
+
+
+      res.status(200).send(results)
+  })
+})
+
+  
+module.exports = app;
 
 //============================================================== Login/Logout APIs ===============================================================================
 
@@ -504,8 +378,8 @@ app.post('/user/login',function(req, res){
         res.json({success: true, UserData: result, token:token, status: 'You are successfully logged in!'}); 
         res.send();
   } else{
-          res.status(500);
-          res.send(err.statusCode);
+      res.status(501)
+      res.send(err);
       }
   }); 
 }); 

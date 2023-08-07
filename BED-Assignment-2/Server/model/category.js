@@ -55,7 +55,7 @@ const Category = {
             } else {
                 console.log("Connected!")
 
-                var sql = 'SELECT catname FROM category'
+                var sql = 'SELECT catname, id FROM category'
 
                 conn.query(sql, function(err,results) {
                     conn.end();
@@ -81,7 +81,8 @@ const Category = {
             } else {
                 console.log("Connected!")
 
-                
+            
+
             var category_names = catname.split(',');
             var promises = [];
       

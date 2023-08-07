@@ -133,11 +133,10 @@ const User = {
 
 
 						} else {
-							var err2 = new Error("UserID/Password does not match.");
-							err2.statusCode = 500;
+							var err2 = "Email/Password is wrong. Try again";
 							return callback(err2, null, null);
 						}
-					}  //else
+					}  
 				});
 			}
 		});

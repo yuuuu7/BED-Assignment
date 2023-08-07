@@ -55,7 +55,7 @@ const Platform = {
                 console.log("Connected!");
 
                 // SQL query to get all platforms
-                var sql = 'SELECT platform.platform_name FROM platform';
+                var sql = 'SELECT platform.platform_name, platform.id FROM platform';
 
                 conn.query(sql, function(err, results) {
                     conn.end();

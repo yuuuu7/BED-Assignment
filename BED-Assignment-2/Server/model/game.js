@@ -217,46 +217,74 @@ const Game = {
 
 
       //Update games by ID
-      updateGameByID: function(game, gameid, callback)  {
+      updateGameByID: function(game, gameid, imageName, callback)  {
         var conn = db.getConnection();
 
-        conn.connect(function(err) {
-            if(err) {
-                console.log(err)
-                return callback(err)
+      conn.connect(function(err) {
+        if (err) {
+            console.log(err);
+            return callback(err);
+        } else {
+            console.log("Connected! here");
+
+            only1GamePrice = false
+            only1GamePlatform = false
+            only1GameCategory = false
+
+            // Validate price input
+            if (game.price.includes(",")) {
+              var prices = game.price.split(",");
+              for (var i = 0; i < prices.length; i++) {
+                  if (isNaN(parseFloat(prices[i]))) {
+                      return callback("Invalid price format", null);
+                  }
+              }
             } else {
-                console.log("Connected!")
-                
-                // Validate price input
-            var prices = game.price.split(",");
-            for (var i = 0; i < prices.length; i++) {
-                if (isNaN(parseFloat(prices[i]))) {
-                    return callback("Invalid price format", null);
-                }
+              if (isNaN(parseFloat(game.price))) {
+                return callback("Invalid price format", null);
+              }
+              only1GamePrice = true
             }
 
             // Validate platformid input
-            var platformIds = game.platformid.split(",");
-            for (var i = 0; i < platformIds.length; i++) {
-                if (isNaN(parseInt(platformIds[i]))) {
-                    return callback("Invalid platformid format", null);
-                }
-            }
+            if (game.platformid.includes(",")) {
+              var platformIds = game.platformid.split(",");
+              for (var i = 0; i < platformIds.length; i++) {
+                  if (isNaN(parseInt(platformIds[i]))) {
+                      return callback("Invalid platformid format", null);
+                  }
+              }
+            } 
 
-            // Validate number of prices to number of platforms
-            if(prices.length !== platformIds.length) {
-              return callback("Prices and Platforms do not match", null);
-            }
+            platformIds = [game.platformid]
+            only1GamePlatform = true
 
+            
+            
+            if(only1GamePrice !== true && only1GamePlatform !== true) {
+              
+              // Validate number of prices to number of platforms
+              if (prices.length !== platformIds.length) {
+                  return callback("Prices and Platforms do not match", null);
+              }
+            }
 
             // Validate categoryid input
-            var categoryIds = game.categoryid.split(",");
-            for (var i = 0; i < categoryIds.length; i++) {
-                if (isNaN(parseInt(categoryIds[i]))) {
-                    return callback("Invalid categoryid format", null);
-                }
-            }
+            if (game.categoryid.includes(",")) {
 
+              var categoryIds = game.categoryid.split(",");
+              for (var i = 0; i < categoryIds.length; i++) {
+                  if (isNaN(parseInt(categoryIds[i]))) {
+                      return callback("Invalid categoryid format", null);
+                  }
+              }
+
+            } 
+
+            categoryIds = [game.categoryid]
+            only1GameCategory = true
+            
+            
             // Check if platformids exist in platform table
             var platformSql = 'SELECT COUNT(*) AS count FROM platform WHERE id IN (?)';
             conn.query(platformSql, [platformIds], function(err, platformResult) {
@@ -270,11 +298,10 @@ const Game = {
                     conn.end();
                     return callback("Invalid platformid(s)", null);
                 }
-
+                
                 // Check if categoryids exist in category table
                 var categorySql = 'SELECT COUNT(*) AS count FROM category WHERE id IN (?)';
                 conn.query(categorySql, [categoryIds], function(err, categoryResult) {
-
                     if (err) {
                         return callback(err, null);
                     }
@@ -284,76 +311,41 @@ const Game = {
                         return callback("Invalid categoryid(s)", null);
                     }
 
-                    // All validations passed, insert the game
-                    var sql = 'UPDATE game SET title=?, description=?, price=?, platformid=?, categoryid=?, year=? WHERE id=?'
+                        var sql = 'SELECT image_name from game where id=?'
+                        conn.query[sql, [gameid], function(err, results) {
+                            if(err) {
+                                return callback(err, null);
+                            }
 
-                    conn.query(sql, [game.title, game.description, game.price, game.platformid, game.categoryid, game.year, gameid], function(err,results) {
+                            var oldImageName = results[0].image_name;
 
-                        conn.end();
+                            if (imageName == oldImageName || imageName === null || imageName === undefined || imageName === "") {
+                                imageName = oldImageName
+                            } else {
+                              var fs = require('fs');
+                              fs.unlinkSync('./public/images/' + oldImageName);
+                            }
 
-                        if(err) {
-                            return callback(err,null)
-                        }
+                            // All validations passed, insert the game
+                            console.log('Nice')
+                            var sql = 'UPDATE game SET title=?, description=?, price=?, platformid=?, categoryid=?, year=?, image_name=? WHERE id=?'
+                            conn.query(sql, [game.title, game.description, game.price, game.platformid, game.categoryid, game.year, imageName, gameid], function(err, results) {
+                                conn.end();
 
-                        return callback(null,null)
-
-                    })
-                })
-            })
-          }
-        })
-      },
-
-      // Retrieves the image name associated with a game title
-      retrieveImage: function(gametitle, callback) {
-        var conn = db.getConnection();
-
-        conn.connect(function(err) {
-            if (err) {
-                return callback(err);
-            } else {
-                console.log("Connected!");
-
-                // SQL query to retrieve the image name for a given game title
-                var sql = "SELECT game.image_name, game.title FROM game WHERE game.id=?";
-
-                conn.query(sql, [gametitle], function(err, results) {
-                    conn.end();
-
-                    if (err) {
-                        return callback(err, null);
-                    }
-
-                    // Pass the results (image name and title) to the callback
-                    return callback(null, results);
+                                if (err) {
+                                    return callback(err, null);
+                                }
+                                
+                                return callback(null, null);
+                                });
+                        }]
+                        
+                    });
                 });
             }
         });
       },
-
-      // Updates the image name for a game
-      addImageName: function (image_name, gameid, callback) {
-        var conn = db.getConnection();
-
-        conn.connect(function (err) {
-            if (err) {
-                return callback(err);
-            }
-
-            // SQL query to update the image name for a game based on its ID
-            var sql = `UPDATE game SET image_name=? WHERE id=?`;
-
-            conn.query(sql, [image_name, gameid], function (err, results) {
-                conn.end();
-
-                if (err) {
-                    return callback(err);
-                }
-
-                return callback(null, null);
-            });
-        });
-      },
+    
 
       // Retrieves a game by its ID
       getGameByID: function (gameid, callback) {
@@ -380,7 +372,7 @@ const Game = {
       },
 
       // Retrieves all games
-      getAllGames: function (callback) {
+      getAllGameNames: function (callback) {
         var conn = db.getConnection();
 
         conn.connect(function (err) {
@@ -389,7 +381,7 @@ const Game = {
             }
 
             // SQL query to select all games
-            var sql = `SELECT * FROM game`;
+            var sql = `SELECT game.title FROM game`;
 
             conn.query(sql, function (err, results) {
                 conn.end();
@@ -404,7 +396,7 @@ const Game = {
       },
 
         //Retrieve games via search bar
-        gameSearch: function (search, callback) {
+        gameSelectByName: function (option, callback) {
             var conn = db.getConnection();
 
             conn.connect(function (err) {
@@ -414,16 +406,15 @@ const Game = {
                 console.log("Connected to Search EP");
 
                 // SQL query to select games based on search input
-                var sql = `SELECT * FROM game WHERE title LIKE ?`;
+                var sql = `SELECT * FROM game WHERE title=?`;
 
-                conn.query(sql, [`%${search}%`], function (err, results) {
+                conn.query(sql, [option], function (err, results) {
                     conn.end();
 
                     if (err) {
                         return callback(err);
                     }
 
-                    console.log(results);
                     return callback(null, results);
                 });
             });
