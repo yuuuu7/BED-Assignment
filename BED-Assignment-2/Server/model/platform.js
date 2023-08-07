@@ -10,7 +10,7 @@ const Platform = {
                 console.log(err);
                 return callback(err);
             } else {
-                console.log("Connected!");
+                console.log("Connected! lol");
 
                 // SQL query to check if the platform already exists
                 var sql = 'SELECT * FROM platform WHERE platform_name=?';

@@ -107,7 +107,7 @@
       <div class="tab-pane" id="newPlatformtab">
         <h3>Add New Platform</h3>
         <!-- New Category Form -->
-        <form>
+        <form enctype="multipart/form-data" id="newPlatform" method="post">
           <div class="form-group">
             <label for="platformName">Platform Name</label>
             <input type="text" class="form-control" id="platformName" pattern="[A-Za-z0-9]+" name="platformName" title="Please enter only numbers and letters" required>
@@ -554,6 +554,7 @@
   //         console.log(error);
   //       });
   //     });
+
   $('#newPlatform').submit((event) => {
 
   event.preventDefault();
